@@ -26,63 +26,129 @@ GLuint uModelViewMatrix;
 //-----------------------------------------------------------------
 
 //6 faces, 2 triangles/face, 3 vertices/triangle
-const int num_vertices = 36;
 
 //Eight vertices in homogenous coordinates
-glm::vec4 positions[8] = {
-  glm::vec4(-0.5, -0.5, 0.5, 1.0),
-  glm::vec4(-0.5, 0.5, 0.5, 1.0),
-  glm::vec4(0.5, 0.5, 0.5, 1.0),
-  glm::vec4(0.5, -0.5, 0.5, 1.0),
-  glm::vec4(-0.5, -0.5, -0.5, 1.0),
-  glm::vec4(-0.5, 0.5, -0.5, 1.0),
-  glm::vec4(0.5, 0.5, -0.5, 1.0),
-  glm::vec4(0.5, -0.5, -0.5, 1.0)
-};
+//glm::vec4 positions[8] = {
+//  glm::vec4(-0.5, -0.5, 0.5, 1.0),
+//  glm::vec4(-0.5, 0.5, 0.5, 1.0),
+//  glm::vec4(0.5, 0.5, 0.5, 1.0),
+//  glm::vec4(0.5, -0.5, 0.5, 1.0),
+//  glm::vec4(-0.5, -0.5, -0.5, 1.0),
+//  glm::vec4(-0.5, 0.5, -0.5, 1.0),
+//  glm::vec4(0.5, 0.5, -0.5, 1.0),
+//  glm::vec4(0.5, -0.5, -0.5, 1.0)
+//};
+//
+////RGBA colors
+//glm::vec4 colors[8] = {
+//  glm::vec4(0.0, 0.0, 0.0, 1.0),
+//  glm::vec4(1.0, 0.0, 0.0, 1.0),
+//  glm::vec4(1.0, 1.0, 0.0, 1.0),
+//  glm::vec4(0.0, 1.0, 0.0, 1.0),
+//  glm::vec4(0.0, 0.0, 1.0, 1.0),
+//  glm::vec4(1.0, 0.0, 1.0, 1.0),
+//  glm::vec4(1.0, 1.0, 1.0, 1.0),
+//  glm::vec4(0.0, 1.0, 1.0, 1.0)
+//};
 
-//RGBA colors
-glm::vec4 colors[8] = {
-  glm::vec4(0.0, 0.0, 0.0, 1.0),
-  glm::vec4(1.0, 0.0, 0.0, 1.0),
-  glm::vec4(1.0, 1.0, 0.0, 1.0),
-  glm::vec4(0.0, 1.0, 0.0, 1.0),
-  glm::vec4(0.0, 0.0, 1.0, 1.0),
-  glm::vec4(1.0, 0.0, 1.0, 1.0),
-  glm::vec4(1.0, 1.0, 1.0, 1.0),
-  glm::vec4(0.0, 1.0, 1.0, 1.0)
-};
+std::vector<glm::vec4> v_positions;
+std::vector<glm::vec4> v_colors;
 
-int tri_idx=0;
-glm::vec4 v_positions[num_vertices];
-glm::vec4 v_colors[num_vertices];
+// glm::vec4 v_positions[num_vertices];
+// glm::vec4 v_colors[num_vertices];
 
 // quad generates two triangles for each face and assigns colors to the vertices
-void quad(int a, int b, int c, int d)
-{
-  v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
-  v_colors[tri_idx] = colors[b]; v_positions[tri_idx] = positions[b]; tri_idx++;
-  v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
-  v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
-  v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
-  v_colors[tri_idx] = colors[d]; v_positions[tri_idx] = positions[d]; tri_idx++;
- }
+// void quad(int a, int b, int c, int d)
+// {
+//   v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
+//   v_colors[tri_idx] = colors[b]; v_positions[tri_idx] = positions[b]; tri_idx++;
+//   v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
+//   v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
+//   v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
+//   v_colors[tri_idx] = colors[d]; v_positions[tri_idx] = positions[d]; tri_idx++;
+//  }
 
-// generate 12 triangles: 36 vertices and 36 colors
-void colorcube(void)
-{
-    quad( 1, 0, 3, 2 );
-    quad( 2, 3, 7, 6 );
-    quad( 3, 0, 4, 7 );
-    quad( 6, 5, 1, 2 );
-    quad( 4, 5, 6, 7 );
-    quad( 5, 4, 0, 1 );
+// // generate 12 triangles: 36 vertices and 36 colors
+// void colorcube(void)
+// {
+//     quad( 1, 0, 3, 2 );
+//     quad( 2, 3, 7, 6 );
+//     quad( 3, 0, 4, 7 );
+//     quad( 6, 5, 1, 2 );
+//     quad( 4, 5, 6, 7 );
+//     quad( 5, 4, 0, 1 );
+// }
+
+void loadModel(std::string file_name){
+  std::ifstream in_file;
+  in_file.open(file_name);
+
+  if (in_file.is_open()){
+
+    v_positions.clear();
+    v_colors.clear();
+
+    GLfloat tmp;
+    glm::vec4 vec(0.0,0.0,0.0,1.0);
+    int i = 0;
+
+    while (in_file >> tmp){
+      // std::cout << tmp << std::endl;
+      i = (i+1)%6;
+
+      switch(i){
+        case 1:
+        case 2:
+          vec[i-1] = tmp;
+          break;
+        case 3:
+          vec[2] = tmp;
+          v_positions.push_back(vec);
+          break;
+        case 4:
+        case 5:
+          vec[i-4] = tmp;
+          break;
+        case 6:
+          vec[2] = tmp;
+          v_colors.push_back(vec);
+          break;
+      }
+
+    }
+
+    in_file.close();
+
+  }
+  else {
+    std::cerr << "Bad file name" << std::endl;
+  }
 }
 
+void saveModel(std::string file_name){
+  std::ofstream out_file;
+  out_file.open(file_name);
+
+  if (out_file.is_open()){
+
+    GLfloat tmp;
+    glm::vec4 vec(0.0,0.0,0.0,1.0);
+
+    for(size_t i=0; i<v_positions.size(); i++){
+      out_file << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
+               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
+    }
+
+    out_file.close();
+  }
+  else {
+    std::cerr << "Failed to write to file" << std::endl;
+  }
+}
 //-----------------------------------------------------------------
 
 void initBuffersGL(void)
 {
-  colorcube();
 
   //Ask GL for a Vertex Attribute Object (vao)
   glGenVertexArrays (1, &vao);
@@ -94,10 +160,13 @@ void initBuffersGL(void)
   //Set it as the current buffer to be used by binding it
   glBindBuffer (GL_ARRAY_BUFFER, vbo);
   //Copy the points into the current buffer
-  glBufferData (GL_ARRAY_BUFFER, sizeof (v_positions) + sizeof(v_colors), NULL, GL_STATIC_DRAW);
-  glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(v_positions), v_positions );
-  glBufferSubData( GL_ARRAY_BUFFER, sizeof(v_positions), sizeof(v_colors), v_colors );
+  glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
+  glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
+  glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), sizeof(v_colors), v_colors.data() );
+}
 
+void initShadersGL(void)
+{
   // Load shaders and use the resulting shader program
   std::string vertex_shader_file("vshader.glsl");
   std::string fragment_shader_file("fshader.glsl");
@@ -134,7 +203,7 @@ void renderGL(void)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
   // Draw 
-  glDrawArrays(GL_TRIANGLES, 0, num_vertices);
+  glDrawArrays(GL_TRIANGLES, 0, v_positions.size());
   
 }
 
@@ -195,7 +264,8 @@ int main(int argc, char** argv)
 
   //Initialize GL state
   csX75::initGL();
-  initBuffersGL();
+  loadModel("file.raw");
+  initShadersGL();
 
   // Loop until the user closes the window
   while (glfwWindowShouldClose(window) == 0)
