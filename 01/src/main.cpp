@@ -79,6 +79,26 @@ std::vector<glm::vec4> v_colors;
 //     quad( 5, 4, 0, 1 );
 // }
 
+void initBuffersGL(void)
+{
+
+  //Ask GL for a Vertex Attribute Object (vao)
+  glGenVertexArrays (1, &vao);
+  //Set it as the current array to be used by binding it
+  glBindVertexArray (vao);
+
+  //Ask GL for a Vertex Buffer Object (vbo)
+  glGenBuffers (1, &vbo);
+  //Set it as the current buffer to be used by binding it
+  glBindBuffer (GL_ARRAY_BUFFER, vbo);
+  //Copy the points into the current buffer
+  std::cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << std::endl;
+  glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
+  glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
+  glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
+}
+
+
 void loadModel(std::string file_name){
   std::ifstream in_file;
   in_file.open(file_name);
@@ -103,22 +123,29 @@ void loadModel(std::string file_name){
           break;
         case 3:
           vec[2] = tmp;
+          vec[3] = 2;
           v_positions.push_back(vec);
           break;
         case 4:
         case 5:
           vec[i-4] = tmp;
           break;
-        case 6:
+        case 0:
           vec[2] = tmp;
+          vec[3] = 0.5;
           v_colors.push_back(vec);
           break;
       }
 
     }
-
     in_file.close();
 
+    for(int i=0; i<v_positions.size(); i++){
+      std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
+               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl; 
+    }
+
+    initBuffersGL();
   }
   else {
     std::cerr << "Bad file name" << std::endl;
@@ -146,24 +173,6 @@ void saveModel(std::string file_name){
   }
 }
 //-----------------------------------------------------------------
-
-void initBuffersGL(void)
-{
-
-  //Ask GL for a Vertex Attribute Object (vao)
-  glGenVertexArrays (1, &vao);
-  //Set it as the current array to be used by binding it
-  glBindVertexArray (vao);
-
-  //Ask GL for a Vertex Buffer Object (vbo)
-  glGenBuffers (1, &vbo);
-  //Set it as the current buffer to be used by binding it
-  glBindBuffer (GL_ARRAY_BUFFER, vbo);
-  //Copy the points into the current buffer
-  glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
-  glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
-  glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), sizeof(v_colors), v_colors.data() );
-}
 
 void initShadersGL(void)
 {
