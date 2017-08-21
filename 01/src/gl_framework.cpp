@@ -37,26 +37,28 @@ namespace csX75
     //!Close the window if the ESC key was pressed
     if (key == GLFW_KEY_L && action == GLFW_PRESS){
       string filename;
+      cout << "Enter file name: ";
       cin>>filename;
       loadModel(filename);
     }
     if(key == GLFW_KEY_K && action == GLFW_PRESS){
       string filename;
+      cout << "Enter file name: ";
       cin>>filename;
       saveModel(filename);
     }
     else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-      yrot -= 1.0;
+      yrot -= 0.314159;
     else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-      yrot += 1.0;
+      yrot += 0.314159;
     else if (key == GLFW_KEY_UP && action == GLFW_PRESS)
-      xrot += 1.0;
+      xrot += 0.314159;
     else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-      xrot += 1.0;
+      xrot += 0.314159;
     else if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS)
-      zrot += 1.0;
+      zrot += 0.314159;
     else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
-      zrot += 1.0;
+      zrot += 0.314159;
   }
 };  
   

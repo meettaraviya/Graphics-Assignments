@@ -99,81 +99,6 @@ void initBuffersGL(void)
 }
 
 
-void loadModel(std::string file_name){
-  std::ifstream in_file;
-  in_file.open(file_name);
-
-  if (in_file.is_open()){
-
-    v_positions.clear();
-    v_colors.clear();
-
-    GLfloat tmp;
-    glm::vec4 vec(0.0,0.0,0.0,1.0);
-    int i = 0;
-
-    while (in_file >> tmp){
-      // std::cout << tmp << std::endl;
-      i = (i+1)%6;
-
-      switch(i){
-        case 1:
-        case 2:
-          vec[i-1] = tmp;
-          break;
-        case 3:
-          vec[2] = tmp;
-          vec[3] = 2;
-          v_positions.push_back(vec);
-          break;
-        case 4:
-        case 5:
-          vec[i-4] = tmp;
-          break;
-        case 0:
-          vec[2] = tmp;
-          vec[3] = 0.5;
-          v_colors.push_back(vec);
-          break;
-      }
-
-    }
-    in_file.close();
-
-    for(int i=0; i<v_positions.size(); i++){
-      std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
-               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl; 
-    }
-
-    initBuffersGL();
-  }
-  else {
-    std::cerr << "Bad file name" << std::endl;
-  }
-}
-
-void saveModel(std::string file_name){
-  std::ofstream out_file;
-  out_file.open(file_name);
-
-  if (out_file.is_open()){
-
-    GLfloat tmp;
-    glm::vec4 vec(0.0,0.0,0.0,1.0);
-
-    for(size_t i=0; i<v_positions.size(); i++){
-      out_file << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
-               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
-    }
-
-    out_file.close();
-  }
-  else {
-    std::cerr << "Failed to write to file" << std::endl;
-  }
-}
-//-----------------------------------------------------------------
-
 void initShadersGL(void)
 {
   // Load shaders and use the resulting shader program
@@ -194,10 +119,91 @@ void initShadersGL(void)
   
   GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" ); 
   glEnableVertexAttribArray( vColor );
-  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(v_positions)) );
+  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_positions.size()*sizeof(glm::vec4)) );
 
   uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 }
+
+void loadModel(std::string file_name){
+  std::ifstream in_file;
+  in_file.open(file_name.c_str());
+
+  if (in_file.is_open()){
+
+    v_positions.clear();
+    v_colors.clear();
+
+    GLfloat tmp;
+    glm::vec4 vec(0.0,0.0,0.0,1.0), positions_sum(0,0,0,0);
+    int i = 0;
+
+    while (in_file >> tmp){
+      // std::cout << tmp << std::endl;
+      i = (i+1)%6;
+
+      switch(i){
+        case 1:
+        case 2:
+          vec[i-1] = tmp;
+          break;
+        case 3:
+          vec[2] = tmp;
+          v_positions.push_back(vec);
+          positions_sum += vec;
+          break;
+        case 4:
+        case 5:
+          vec[i-4] = tmp;
+          break;
+        case 0:
+          vec[2] = tmp;
+          v_colors.push_back(vec);
+          break;
+      }
+
+    }
+
+    // for(int i=0; i<)
+    in_file.close();
+
+    for(int i=0; i<v_positions.size(); i++){
+      std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << std::endl;
+    }
+    std::cout << std::endl;
+    for(int i=0; i<v_positions.size(); i++){
+      std::cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl; 
+    }
+
+    initBuffersGL();
+    initShadersGL();
+  }
+  else {
+    std::cerr << "Bad file name" << std::endl;
+  }
+}
+
+void saveModel(std::string file_name){
+  std::ofstream out_file;
+  out_file.open(file_name.c_str());
+
+  if (out_file.is_open()){
+
+    GLfloat tmp;
+    glm::vec4 vec(0.0,0.0,0.0,1.0);
+
+    for(size_t i=0; i<v_positions.size(); i++){
+      out_file << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
+               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
+    }
+
+    out_file.close();
+  }
+  else {
+    std::cerr << "Failed to write to file" << std::endl;
+  }
+}
+//-----------------------------------------------------------------
+
 
 void renderGL(void)
 {
