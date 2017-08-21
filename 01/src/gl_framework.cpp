@@ -1,4 +1,5 @@
 #include "gl_framework.hpp"
+using namespace std;
 
 extern GLfloat xrot,yrot,zrot;
 
@@ -34,8 +35,16 @@ namespace csX75
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
   {
     //!Close the window if the ESC key was pressed
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-      glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key == GLFW_KEY_L && action == GLFW_PRESS){
+      string filename;
+      cin>>filename;
+      loadModel(filename);
+    }
+    if(key == GLFW_KEY_K && action == GLFW_PRESS){
+      string filename;
+      cin>>filename;
+      saveModel(filename);
+    }
     else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
       yrot -= 1.0;
     else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
