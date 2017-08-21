@@ -13,7 +13,7 @@
 */
 
 
-#include "03_colorcube_rotate.hpp"
+#include "main.hpp"
 
 GLuint shaderProgram;
 GLuint vbo, vao;
@@ -99,8 +99,8 @@ void initBuffersGL(void)
   glBufferSubData( GL_ARRAY_BUFFER, sizeof(v_positions), sizeof(v_colors), v_colors );
 
   // Load shaders and use the resulting shader program
-  std::string vertex_shader_file("03_vshader.glsl");
-  std::string fragment_shader_file("03_fshader.glsl");
+  std::string vertex_shader_file("vshader.glsl");
+  std::string fragment_shader_file("fshader.glsl");
 
   std::vector<GLuint> shaderList;
   shaderList.push_back(csX75::LoadShaderGL(GL_VERTEX_SHADER, vertex_shader_file));
