@@ -5,7 +5,6 @@ extern GLfloat xrot,yrot,zrot;
 
 namespace csX75
 {
-  //! Initialize GL State
   void initGL(void)
   {
     //Set framebuffer clear color
@@ -21,7 +20,7 @@ namespace csX75
   //!GLFW Error Callback
   void error_callback(int error, const char* description)
   {
-    std::cerr<<description<<std::endl;
+    cerr<<description<<endl;
   }
   
   //!GLFW framebuffer resize callback
@@ -47,17 +46,17 @@ namespace csX75
       cin>>filename;
       saveModel(filename);
     }
-    else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT)
       yrot -= 0.314159;
-    else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT)
       yrot += 0.314159;
-    else if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_UP && action == GLFW_REPEAT)
+      xrot -= 0.314159;
+    else if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT)
       xrot += 0.314159;
-    else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-      xrot += 0.314159;
-    else if (key == GLFW_KEY_PAGE_UP && action == GLFW_PRESS)
-      zrot += 0.314159;
-    else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_PAGE_UP && action == GLFW_REPEAT)
+      zrot -= 0.314159;
+    else if (key == GLFW_KEY_PAGE_DOWN && action == GLFW_REPEAT)
       zrot += 0.314159;
   }
 };  

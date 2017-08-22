@@ -1,118 +1,44 @@
-/*
-  CSX75 Tutorial 3
-
-  A program which opens a window and draws the "color cube."
-
-  Use the arrow keys and PgUp,PgDn,
-  keys to make the cube move.
-
-  Modified from An Introduction to OpenGL Programming, 
-  Ed Angel and Dave Shreiner, SIGGRAPH 2013
-
-  Written by Parag Chaudhuri, 2015
-*/
-
-
 #include "main.hpp"
 
 GLuint shaderProgram;
 GLuint vbo, vao;
 
-glm::mat4 rotation_matrix;
+// glm::mat4 rotation_matrix;
+glm::mat4 transformation_matrix;
 glm::mat4 ortho_matrix;
 glm::mat4 modelview_matrix;
 GLuint uModelViewMatrix;
 
-//-----------------------------------------------------------------
-
-//6 faces, 2 triangles/face, 3 vertices/triangle
-
-//Eight vertices in homogenous coordinates
-//glm::vec4 positions[8] = {
-//  glm::vec4(-0.5, -0.5, 0.5, 1.0),
-//  glm::vec4(-0.5, 0.5, 0.5, 1.0),
-//  glm::vec4(0.5, 0.5, 0.5, 1.0),
-//  glm::vec4(0.5, -0.5, 0.5, 1.0),
-//  glm::vec4(-0.5, -0.5, -0.5, 1.0),
-//  glm::vec4(-0.5, 0.5, -0.5, 1.0),
-//  glm::vec4(0.5, 0.5, -0.5, 1.0),
-//  glm::vec4(0.5, -0.5, -0.5, 1.0)
-//};
-//
-////RGBA colors
-//glm::vec4 colors[8] = {
-//  glm::vec4(0.0, 0.0, 0.0, 1.0),
-//  glm::vec4(1.0, 0.0, 0.0, 1.0),
-//  glm::vec4(1.0, 1.0, 0.0, 1.0),
-//  glm::vec4(0.0, 1.0, 0.0, 1.0),
-//  glm::vec4(0.0, 0.0, 1.0, 1.0),
-//  glm::vec4(1.0, 0.0, 1.0, 1.0),
-//  glm::vec4(1.0, 1.0, 1.0, 1.0),
-//  glm::vec4(0.0, 1.0, 1.0, 1.0)
-//};
-
-std::vector<glm::vec4> v_positions;
-std::vector<glm::vec4> v_colors;
-
-// glm::vec4 v_positions[num_vertices];
-// glm::vec4 v_colors[num_vertices];
-
-// quad generates two triangles for each face and assigns colors to the vertices
-// void quad(int a, int b, int c, int d)
-// {
-//   v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
-//   v_colors[tri_idx] = colors[b]; v_positions[tri_idx] = positions[b]; tri_idx++;
-//   v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
-//   v_colors[tri_idx] = colors[a]; v_positions[tri_idx] = positions[a]; tri_idx++;
-//   v_colors[tri_idx] = colors[c]; v_positions[tri_idx] = positions[c]; tri_idx++;
-//   v_colors[tri_idx] = colors[d]; v_positions[tri_idx] = positions[d]; tri_idx++;
-//  }
-
-// // generate 12 triangles: 36 vertices and 36 colors
-// void colorcube(void)
-// {
-//     quad( 1, 0, 3, 2 );
-//     quad( 2, 3, 7, 6 );
-//     quad( 3, 0, 4, 7 );
-//     quad( 6, 5, 1, 2 );
-//     quad( 4, 5, 6, 7 );
-//     quad( 5, 4, 0, 1 );
-// }
+vector<glm::vec4> v_positions;
+glm::vec4 centroid;
+vector<glm::vec4> v_colors;
 
 void initBuffersGL(void)
 {
 
-  //Ask GL for a Vertex Attribute Object (vao)
   glGenVertexArrays (1, &vao);
-  //Set it as the current array to be used by binding it
   glBindVertexArray (vao);
 
-  //Ask GL for a Vertex Buffer Object (vbo)
   glGenBuffers (1, &vbo);
-  //Set it as the current buffer to be used by binding it
   glBindBuffer (GL_ARRAY_BUFFER, vbo);
-  //Copy the points into the current buffer
-  std::cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << std::endl;
+  cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << endl;
   glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
   glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
   glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
 }
 
-
 void initShadersGL(void)
 {
-  // Load shaders and use the resulting shader program
-  std::string vertex_shader_file("vshader.glsl");
-  std::string fragment_shader_file("fshader.glsl");
+  string vertex_shader_file("vshader.glsl");
+  string fragment_shader_file("fshader.glsl");
 
-  std::vector<GLuint> shaderList;
+  vector<GLuint> shaderList;
   shaderList.push_back(csX75::LoadShaderGL(GL_VERTEX_SHADER, vertex_shader_file));
   shaderList.push_back(csX75::LoadShaderGL(GL_FRAGMENT_SHADER, fragment_shader_file));
 
   shaderProgram = csX75::CreateProgramGL(shaderList);
   glUseProgram( shaderProgram );
 
-  // set up vertex arrays
   GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   glEnableVertexAttribArray( vPosition );
   glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
@@ -124,9 +50,9 @@ void initShadersGL(void)
   uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 }
 
-void loadModel(std::string file_name){
-  std::ifstream in_file;
-  in_file.open(file_name.c_str());
+void loadModel(string file_name){
+  ifstream in_file;
+  in_file.open(file_name);
 
   if (in_file.is_open()){
 
@@ -138,7 +64,7 @@ void loadModel(std::string file_name){
     int i = 0;
 
     while (in_file >> tmp){
-      // std::cout << tmp << std::endl;
+      // cout << tmp << endl;
       i = (i+1)%6;
 
       switch(i){
@@ -163,28 +89,27 @@ void loadModel(std::string file_name){
 
     }
 
-    // for(int i=0; i<)
     in_file.close();
 
     for(int i=0; i<v_positions.size(); i++){
-      std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << std::endl;
+      cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << endl;
     }
-    std::cout << std::endl;
+    cout << endl;
     for(int i=0; i<v_positions.size(); i++){
-      std::cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl; 
+      cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << endl; 
     }
 
     initBuffersGL();
     initShadersGL();
   }
   else {
-    std::cerr << "Bad file name" << std::endl;
+    cerr << "Bad file name" << endl;
   }
 }
 
-void saveModel(std::string file_name){
-  std::ofstream out_file;
-  out_file.open(file_name.c_str());
+void saveModel(string file_name){
+  ofstream out_file;
+  out_file.open(file_name);
 
   if (out_file.is_open()){
 
@@ -193,13 +118,13 @@ void saveModel(std::string file_name){
 
     for(size_t i=0; i<v_positions.size(); i++){
       out_file << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
-               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
+               << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << endl;
     }
 
     out_file.close();
   }
   else {
-    std::cerr << "Failed to write to file" << std::endl;
+    cerr << "Failed to write to file" << endl;
   }
 }
 //-----------------------------------------------------------------
@@ -209,15 +134,15 @@ void renderGL(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  rotation_matrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
-  rotation_matrix = glm::rotate(rotation_matrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
-  rotation_matrix = glm::rotate(rotation_matrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
+  transformation_matrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
+  transformation_matrix = glm::rotate(transformation_matrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
+  transformation_matrix = glm::rotate(transformation_matrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
   ortho_matrix = glm::ortho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-
-  modelview_matrix = ortho_matrix * rotation_matrix;
+  modelview_matrix = ortho_matrix * transformation_matrix;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
   // Draw 
+  
   glDrawArrays(GL_TRIANGLES, 0, v_positions.size());
   
 }
@@ -260,14 +185,14 @@ int main(int argc, char** argv)
   if (GLEW_OK != err)
     {
       //Problem: glewInit failed, something is seriously wrong.
-      std::cerr<<"GLEW Init Failed : %s"<<std::endl;
+      cerr<<"GLEW Init Failed : %s"<<endl;
     }
 
   //Print and see what context got enabled
-  std::cout<<"Vendor: "<<glGetString (GL_VENDOR)<<std::endl;
-  std::cout<<"Renderer: "<<glGetString (GL_RENDERER)<<std::endl;
-  std::cout<<"Version: "<<glGetString (GL_VERSION)<<std::endl;
-  std::cout<<"GLSL Version: "<<glGetString (GL_SHADING_LANGUAGE_VERSION)<<std::endl;
+  cout<<"Vendor: "<<glGetString (GL_VENDOR)<<endl;
+  cout<<"Renderer: "<<glGetString (GL_RENDERER)<<endl;
+  cout<<"Version: "<<glGetString (GL_VERSION)<<endl;
+  cout<<"GLSL Version: "<<glGetString (GL_SHADING_LANGUAGE_VERSION)<<endl;
 
   //Keyboard Callback
   glfwSetKeyCallback(window, csX75::key_callback);

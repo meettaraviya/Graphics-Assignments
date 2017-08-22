@@ -3,13 +3,13 @@
 
 namespace csX75
 {
-  GLuint LoadShaderGL(GLenum eShaderType, const std::string &strFilename)
+  GLuint LoadShaderGL(GLenum eShaderType, const string &strFilename)
   {
-    std::ifstream shaderFile(strFilename.c_str());
+    ifstream shaderFile(strFilename.c_str());
     if (!shaderFile.is_open())
-      throw std::runtime_error("Cannot find file: " + strFilename);
+      throw runtime_error("Cannot find file: " + strFilename);
    
-    std::stringstream shaderData;
+    stringstream shaderData;
     shaderData << shaderFile.rdbuf();
     shaderFile.close();
     
@@ -17,14 +17,14 @@ namespace csX75
       {
 	return CreateShaderGL(eShaderType, shaderData.str());
       }
-    catch(std::exception &e)
+    catch(exception &e)
       {
-	std::cerr<<e.what()<<std::endl;
+	cerr<<e.what()<<endl;
 	throw;
       }
   }
   
-  GLuint CreateShaderGL(GLenum eShaderType, const std::string &strShaderFile)
+  GLuint CreateShaderGL(GLenum eShaderType, const string &strShaderFile)
   {
     GLuint shader = glCreateShader(eShaderType);
     const char *strFileData = strShaderFile.c_str();
@@ -50,14 +50,14 @@ namespace csX75
 	  case GL_FRAGMENT_SHADER: strShaderType = "fragment"; break;
 	  }
 	
-	std::cerr<<"Compile failure in "<<strShaderType<<" shader:"<<std::endl<<strInfoLog<<std::endl;
+	cerr<<"Compile failure in "<<strShaderType<<" shader:"<<endl<<strInfoLog<<endl;
 	delete[] strInfoLog;
       }
     
     return shader;
   }
   
-  GLuint CreateProgramGL(const std::vector<GLuint> &shaderList)
+  GLuint CreateProgramGL(const vector<GLuint> &shaderList)
   {
     GLuint program = glCreateProgram();
     
@@ -75,7 +75,7 @@ namespace csX75
 	
 	GLchar *strInfoLog = new GLchar[infoLogLength + 1];
 	glGetProgramInfoLog(program, infoLogLength, NULL, strInfoLog);
-	std::cerr<<"GLSL Linker failure: "<<strInfoLog<<std::endl;
+	cerr<<"GLSL Linker failure: "<<strInfoLog<<endl;
 	delete[] strInfoLog;
       }
     

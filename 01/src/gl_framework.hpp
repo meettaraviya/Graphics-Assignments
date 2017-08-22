@@ -8,8 +8,10 @@
 #include <fstream>
 #include <vector>
 
-void saveModel(std::string);
-void loadModel(std::string);
+using namespace std;
+
+void saveModel(string);
+void loadModel(string);
 
 // Define a helpful macro for handling offsets into buffer objects
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
