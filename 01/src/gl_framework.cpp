@@ -33,14 +33,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS){
+  if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
     double posX, posY;
     glfwGetCursorPos(window, &posX, &posY);
     // std::cout << "(x,y) coordinates are: " << posX << " " << posY << std::endl;
-    drawPoint(posX,posY);
+    drawPoint(posX, posY);
   }
 }
-
 //!GLFW keyboard callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -57,18 +56,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     cin >> filename;
     saveModel(filename);
   }
-  else if (key == GLFW_KEY_LEFT && (action == GLFW_REPEAT || action == GLFW_PRESS))
-    yrot -= 0.314159;
-  else if (key == GLFW_KEY_RIGHT && (action == GLFW_REPEAT || action == GLFW_PRESS))
-    yrot += 0.314159;
-  else if (key == GLFW_KEY_UP && (action == GLFW_REPEAT || action == GLFW_PRESS))
-    xrot += 0.314159;
-  else if (key == GLFW_KEY_DOWN && (action == GLFW_REPEAT || action == GLFW_PRESS))
-    xrot -= 0.314159;
-  else if (key == GLFW_KEY_PAGE_UP && (action == GLFW_REPEAT || action == GLFW_PRESS))
-    zrot += 0.314159;
-  else if (key == GLFW_KEY_PAGE_DOWN && (action == GLFW_REPEAT || action == GLFW_PRESS))
-    zrot -= 0.314159;
 }
 };
 
