@@ -3,11 +3,13 @@
 #define WINDOW_WIDTH 768
 #define WINDOW_HEIGHT 512
 
+
 GLuint shaderProgram;
 GLuint vbo, vao;
 
 // glm::mat4 rotation_matrix;
 glm::mat4 mat_rotation;
+glm::mat4 mat_view;
 glm::mat4 mat_translation;
 glm::mat4 mat_ortho_proj;
 glm::mat4 mat_persp_proj;
@@ -15,8 +17,23 @@ glm::mat4 modelview_matrix;
 GLuint uModelViewMatrix;
 
 vector<glm::vec4> v_positions;
+vector<glm::vec4> v_positions_loose;
 glm::vec4 positions_sum;
 vector<glm::vec4> v_colors;
+
+glm::vec3 pos_camera(0.0,0.0, -5.0);
+
+const GLfloat y_min = -2.0;
+const GLfloat y_max = 2.0;
+const GLfloat z_min_ortho = -2.0;
+const GLfloat z_min_persp = 0.1;
+const GLfloat z_max = 1e10;
+const GLfloat aspect_ratio = (GLfloat) WINDOW_WIDTH / WINDOW_HEIGHT;
+const glm::mat4 id(1.0);
+
+enum Mode mode;
+
+
 
 void initBuffersGL(void)
 {
@@ -29,6 +46,16 @@ void initBuffersGL(void)
   glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
   glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
   glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
+
+  GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
+  glEnableVertexAttribArray( vPosition );
+  glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+
+  GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  glEnableVertexAttribArray( vColor );
+  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_positions.size()*sizeof(glm::vec4)) );
+
+  uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 
 }
 
@@ -44,26 +71,15 @@ void initShadersGL(void)
   shaderProgram = csX75::CreateProgramGL(shaderList);
   glUseProgram( shaderProgram );
 
-  GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
-  glEnableVertexAttribArray( vPosition );
-  glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-  
-  GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" ); 
-  glEnableVertexAttribArray( vColor );
-  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_positions.size()*sizeof(glm::vec4)) );
-
-  uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
-
-  GLdouble aspect_ratio = (GLfloat) WINDOW_WIDTH / WINDOW_HEIGHT;
-  mat_ortho_proj = glm::ortho(-2.0*aspect_ratio, 2.0*aspect_ratio, -2.0, 2.0, -2.0, 2.0);
-  mat_persp_proj = glm::perspective(45.0, aspect_ratio, 0.1, 10.0);
+  mat_ortho_proj = glm::ortho(y_min*aspect_ratio,y_max*aspect_ratio, y_min, y_max, z_min_ortho, z_max);
+  mat_persp_proj = glm::perspective((GLfloat) 45.0, aspect_ratio, z_min_persp, z_max);
+  mat_view = glm::lookAt(pos_camera, glm::vec3(0.0,0.0,1.0), glm::vec3(0.0,1.0,0.0));
 }
 
-void loadModel(string file_name){
-  ifstream in_file;
-  in_file.open(file_name);
-
-  if (in_file.is_open()){
+void loadModel(std::string file_name) {
+  std::ifstream in_file;
+  in_file.open(file_name.c_str());
+  if (in_file.is_open()) {
 
     v_positions.clear();
     v_colors.clear();
@@ -99,12 +115,12 @@ void loadModel(string file_name){
 
     in_file.close();
 
-    for(int i=0; i<v_positions.size(); i++){
-      cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << endl;
+    for (int i = 0; i < v_positions.size(); i++) {
+      std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << std::endl;
     }
-    cout << endl;
-    for(int i=0; i<v_positions.size(); i++){
-      cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << endl; 
+    std::cout << std::endl;
+    for (int i = 0; i < v_positions.size(); i++) {
+      std::cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
     }
 
     initBuffersGL();
@@ -118,16 +134,16 @@ void loadModel(string file_name){
   }
 }
 
-void saveModel(string file_name){
-  ofstream out_file;
-  out_file.open(file_name);
+void saveModel(std::string file_name) {
+  std::ofstream out_file;
+  out_file.open(file_name.c_str());
 
-  if (out_file.is_open()){
+  if (out_file.is_open()) {
 
     GLfloat tmp;
-    glm::vec4 vec(0.0,0.0,0.0,1.0);
+    glm::vec4 vec(0.0, 0.0, 0.0, 1.0);
 
-    for(size_t i=0; i<v_positions.size(); i++){
+    for (size_t i = 0; i < v_positions.size(); i++) {
       out_file << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << " "
                << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << endl;
     }
@@ -138,20 +154,72 @@ void saveModel(string file_name){
     cerr << "Failed to write to file" << endl;
   }
 }
+
+void removePoint(){
+  cout << "remove" << endl;
+  if(v_positions_loose.empty()){
+    v_positions_loose.push_back(v_positions[v_positions.size()-3]);
+    v_positions_loose.push_back(v_positions[v_positions.size()-2]);
+    for(int i=0; i<3; i++){
+      positions_sum = positions_sum - v_positions.back();
+      v_positions.pop_back();
+      v_colors.pop_back();
+    }
+
+  }
+  else{
+    v_positions_loose.pop_back();
+  }
+}
+
+void drawPoint(double x, double y) {
+  // cout << v_positions.size() << endl;
+  // cout << x<< " "<<y<<endl;
+  cout << "draw" << endl;
+  GLfloat y_actual = ((y-0)/WINDOW_HEIGHT)*(y_min-y_max) + y_max;
+  GLfloat x_actual = ((x-0)/WINDOW_WIDTH)*(y_min-y_max)*aspect_ratio + y_max*aspect_ratio;
+  glm::vec4 vec(x_actual, y_actual, 0.1, 1.0);
+  v_positions_loose.push_back(vec);
+  if(v_positions_loose.size()==3){
+
+    glm::vec4 color(0.0, 0.0, 0.0, 1.0);
+    cout<<"Enter RGB color value"<<endl;
+    for(int i=0;i<3;i++){
+        cin>>color[i];
+    }
+
+    for(int j=0;j<3;j++){   
+      positions_sum += v_positions_loose[j];
+      v_positions.push_back(v_positions_loose[j]);
+      v_colors.push_back(color);
+    }
+
+    v_positions_loose.clear();
+    initBuffersGL();
+  }
+  
+}
+
 //-----------------------------------------------------------------
 
 
 float unit_rotation = 5e-2;
 float unit_translation = 0.1;
 
-void renderGL(GLFWwindow *window)
-{
+void renderModellingMode(GLFWwindow *window){
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
-  // // Draw 
-  
-  glm::mat4 id(1.0);
+  modelview_matrix = mat_ortho_proj * mat_view;
+
+  glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
+
+  glDrawArrays(GL_TRIANGLES, 0, v_positions.size());
+}
+
+void renderInspectionMode(GLFWwindow *window)
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   modelview_matrix = glm::translate(id, (glm::vec3) -positions_sum/(GLfloat) v_positions.size());
 
@@ -198,91 +266,77 @@ void renderGL(GLFWwindow *window)
   modelview_matrix = mat_rotation * modelview_matrix;
   modelview_matrix = glm::translate(id, (glm::vec3) positions_sum/(GLfloat) v_positions.size()) * modelview_matrix;
   modelview_matrix = mat_translation * modelview_matrix;
-  modelview_matrix = mat_ortho_proj * modelview_matrix;
+  modelview_matrix = mat_view * modelview_matrix;
+  modelview_matrix = mat_persp_proj * modelview_matrix;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
   glDrawArrays(GL_TRIANGLES, 0, v_positions.size());
-  
+
+}
+
+void centreToCentroid(){
+  mat_translation = glm::translate(id, (glm::vec3) -positions_sum/(GLfloat) v_positions.size());
 }
 
 int main(int argc, char** argv)
 {
-  //! The pointer to the GLFW window
   GLFWwindow* window;
 
-  //! Setting up the GLFW Error callback
   glfwSetErrorCallback(csX75::error_callback);
 
-  //! Initialize GLFW
   if (!glfwInit())
     return -1;
 
-  //We want OpenGL 4.0
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); 
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-  //This is for MacOSX - can be omitted otherwise
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
-  //We don't want the old OpenGL 
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  //! Create a windowed mode window and its OpenGL context
-  window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "CS475/CS675 Tutorial 3: Rotating  Colorcube", NULL, NULL);
+  window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Computer graphics - Assignment 1", NULL, NULL);
   if (!window)
-    {
-      glfwTerminate();
-      return -1;
-    }
-  
-  //! Make the window's context current 
+  {
+    glfwTerminate();
+    return -1;
+  }
+
   glfwMakeContextCurrent(window);
 
-  //Initialize GLEW
-  //Turn this on to get Shader based OpenGL
   glewExperimental = GL_TRUE;
   GLenum err = glewInit();
   if (GLEW_OK != err)
     {
-      //Problem: glewInit failed, something is seriously wrong.
       cerr<<"GLEW Init Failed : %s"<<endl;
     }
 
-  //Print and see what context got enabled
   cout<<"Vendor: "<<glGetString (GL_VENDOR)<<endl;
   cout<<"Renderer: "<<glGetString (GL_RENDERER)<<endl;
   cout<<"Version: "<<glGetString (GL_VERSION)<<endl;
   cout<<"GLSL Version: "<<glGetString (GL_SHADING_LANGUAGE_VERSION)<<endl;
 
-  //Keyboard Callback
   glfwSetKeyCallback(window, csX75::key_callback);
-  //Framebuffer resize callback
   glfwSetFramebufferSizeCallback(window, csX75::framebuffer_size_callback);
-
-  // Ensure we can capture the escape key being pressed below
+  glfwSetMouseButtonCallback(window, csX75::mouse_button_callback);
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-  //Initialize GL state
   csX75::initGL();
-  loadModel("file.raw");
   initShadersGL();
+  loadModel("file.raw");
 
-  // Loop until the user closes the window
+  mode = MODE_INSPECTION;
+
   while (glfwWindowShouldClose(window) == 0)
-    {
-       
-      // Render here
-      renderGL(window);
-
-      // Swap front and back buffers
-      glfwSwapBuffers(window);
-      
-      // Poll for and process events
-      glfwPollEvents();
+  { 
+    if(mode==MODE_INSPECTION){
+      renderInspectionMode(window);
     }
-  
+    else{
+      renderModellingMode(window);
+    }
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
+
   glfwTerminate();
   return 0;
 }
-
-//-------------------------------------------------------------------------
-
