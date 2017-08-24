@@ -1,21 +1,25 @@
 #include "main.hpp"
 
+#define WINDOW_WIDTH 768
+#define WINDOW_HEIGHT 512
+
 GLuint shaderProgram;
 GLuint vbo, vao;
 
 // glm::mat4 rotation_matrix;
-glm::mat4 transformation_matrix;
-glm::mat4 ortho_matrix;
+glm::mat4 mat_rotation;
+glm::mat4 mat_translation;
+glm::mat4 mat_ortho_proj;
+glm::mat4 mat_persp_proj;
 glm::mat4 modelview_matrix;
 GLuint uModelViewMatrix;
 
 vector<glm::vec4> v_positions;
-glm::vec4 centroid;
+glm::vec4 positions_sum;
 vector<glm::vec4> v_colors;
 
 void initBuffersGL(void)
 {
-
   glGenVertexArrays (1, &vao);
   glBindVertexArray (vao);
 
@@ -25,6 +29,7 @@ void initBuffersGL(void)
   glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
   glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
   glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
+
 }
 
 void initShadersGL(void)
@@ -48,6 +53,10 @@ void initShadersGL(void)
   glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_positions.size()*sizeof(glm::vec4)) );
 
   uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+
+  GLdouble aspect_ratio = (GLfloat) WINDOW_WIDTH / WINDOW_HEIGHT;
+  mat_ortho_proj = glm::ortho(-2.0*aspect_ratio, 2.0*aspect_ratio, -2.0, 2.0, -2.0, 2.0);
+  mat_persp_proj = glm::perspective(45.0, aspect_ratio, 0.1, 10.0);
 }
 
 void loadModel(string file_name){
@@ -60,11 +69,10 @@ void loadModel(string file_name){
     v_colors.clear();
 
     GLfloat tmp;
-    glm::vec4 vec(0.0,0.0,0.0,1.0), positions_sum(0,0,0,0);
+    glm::vec4 vec(0.0,0.0,0.0,1.0);
     int i = 0;
 
     while (in_file >> tmp){
-      // cout << tmp << endl;
       i = (i+1)%6;
 
       switch(i){
@@ -101,6 +109,9 @@ void loadModel(string file_name){
 
     initBuffersGL();
     initShadersGL();
+
+    glLoadMatrixf(glm::value_ptr(mat_rotation));
+    glLoadIdentity();
   }
   else {
     cerr << "Bad file name" << endl;
@@ -130,19 +141,67 @@ void saveModel(string file_name){
 //-----------------------------------------------------------------
 
 
-void renderGL(void)
+float unit_rotation = 5e-2;
+float unit_translation = 0.1;
+
+void renderGL(GLFWwindow *window)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  transformation_matrix = glm::rotate(glm::mat4(1.0f), xrot, glm::vec3(1.0f,0.0f,0.0f));
-  transformation_matrix = glm::rotate(transformation_matrix, yrot, glm::vec3(0.0f,1.0f,0.0f));
-  transformation_matrix = glm::rotate(transformation_matrix, zrot, glm::vec3(0.0f,0.0f,1.0f));
-  ortho_matrix = glm::ortho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-  modelview_matrix = ortho_matrix * transformation_matrix;
+  // glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
+  // // Draw 
+  
+  glm::mat4 id(1.0);
+
+  modelview_matrix = glm::translate(id, (glm::vec3) -positions_sum/(GLfloat) v_positions.size());
+
+  if(glfwGetKey(window, GLFW_KEY_LEFT)==GLFW_PRESS){
+    mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, -1.0, 0.00))*mat_rotation;
+  }
+  if(glfwGetKey(window, GLFW_KEY_RIGHT)==GLFW_PRESS){
+    mat_rotation = glm::rotate(id,unit_rotation, glm::vec3( 0.0, 1.0, 0.0))*mat_rotation;
+  }
+  if(glfwGetKey(window, GLFW_KEY_UP)==GLFW_PRESS){
+    mat_rotation = glm::rotate(id,unit_rotation, glm::vec3( -1.0, 0.0, 0.00))*mat_rotation;
+  }
+  if(glfwGetKey(window, GLFW_KEY_DOWN)==GLFW_PRESS){
+    mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(1.0, 0.0, 0.0))*mat_rotation;
+  }
+  if(glfwGetKey(window, GLFW_KEY_PAGE_UP)==GLFW_PRESS){
+    mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, 0.0, 1.0))*mat_rotation;
+  }
+  if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN)==GLFW_PRESS){
+    mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, 0.0, -1.0))*mat_rotation;
+  }
+
+
+  if(glfwGetKey(window, GLFW_KEY_W)==GLFW_PRESS){
+    mat_translation = glm::translate(mat_translation, glm::vec3(0.0, +unit_translation * 1.0, 0.0));
+  }
+  if(glfwGetKey(window, GLFW_KEY_S)==GLFW_PRESS){
+    mat_translation = glm::translate(mat_translation, glm::vec3(0.0, -unit_translation * 1.0, 0.0));
+  }
+  if(glfwGetKey(window, GLFW_KEY_D)==GLFW_PRESS){
+    mat_translation = glm::translate(mat_translation, glm::vec3(+unit_translation * 1.0, 0.0, 0.0));
+  }
+  if(glfwGetKey(window, GLFW_KEY_A)==GLFW_PRESS){
+    mat_translation = glm::translate(mat_translation, glm::vec3(-unit_translation * 1.0, 0.0, 0.0));
+  }
+  if(glfwGetKey(window, GLFW_KEY_X)==GLFW_PRESS){
+    mat_translation = glm::translate(mat_translation, glm::vec3(0.0, 0.0, +unit_translation * 1.0));
+  }
+  if(glfwGetKey(window, GLFW_KEY_Z)==GLFW_PRESS){
+    mat_translation = glm::translate(mat_translation, glm::vec3(0.0, 0.0, -unit_translation * 1.0));
+  }
+
+
+  modelview_matrix = mat_rotation * modelview_matrix;
+  modelview_matrix = glm::translate(id, (glm::vec3) positions_sum/(GLfloat) v_positions.size()) * modelview_matrix;
+  modelview_matrix = mat_translation * modelview_matrix;
+  modelview_matrix = mat_ortho_proj * modelview_matrix;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
-  // Draw 
-  
+
   glDrawArrays(GL_TRIANGLES, 0, v_positions.size());
   
 }
@@ -168,7 +227,7 @@ int main(int argc, char** argv)
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
 
   //! Create a windowed mode window and its OpenGL context
-  window = glfwCreateWindow(512, 512, "CS475/CS675 Tutorial 3: Rotating  Colorcube", NULL, NULL);
+  window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "CS475/CS675 Tutorial 3: Rotating  Colorcube", NULL, NULL);
   if (!window)
     {
       glfwTerminate();
@@ -212,7 +271,7 @@ int main(int argc, char** argv)
     {
        
       // Render here
-      renderGL();
+      renderGL(window);
 
       // Swap front and back buffers
       glfwSwapBuffers(window);
