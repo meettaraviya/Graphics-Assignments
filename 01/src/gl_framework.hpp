@@ -3,13 +3,16 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
+#include <GL/glut.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
-
+#include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
 void saveModel(std::string);
 void loadModel(std::string);
+void drawPoint(double x, double y);
+void translate(glm::vec3 vec);
 
 // Define a helpful macro for handling offsets into buffer objects
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
@@ -25,6 +28,9 @@ namespace csX75
   void framebuffer_size_callback(GLFWwindow* window, int width, int height);
   //!GLFW keyboard callback
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+  void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+
 };
 
 #endif
