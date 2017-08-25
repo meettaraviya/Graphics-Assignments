@@ -62,9 +62,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     saveModel(filename);
   }
   if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+    cout<< "Modelling Mode" <<endl;
     mode = MODE_MODELLING;
   }
   if (key == GLFW_KEY_I && action == GLFW_PRESS) {
+    cout<<"Inspection Mode"<<endl;
     mode = MODE_INSPECTION;
   }
   if(key == GLFW_KEY_R && action == GLFW_PRESS && mode == MODE_INSPECTION){
