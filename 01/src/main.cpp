@@ -24,10 +24,11 @@ vector<glm::vec4> v_grid_line_colors;
 glm::vec4 positions_sum;
 vector<glm::vec4> v_colors;
 
-glm::vec3 pos_camera(0.0,0.0, -5.0);
+glm::vec3 pos_camera(0.0,0.0, -50.0);
+glm::vec4 bg_color(0.53, 0.80, 0.98, 1.0);
 
-const GLfloat y_min = -2.0;
-const GLfloat y_max = 2.0;
+const GLfloat y_min = -50.0;
+const GLfloat y_max = 50.0;
 const GLfloat z_min_ortho = -2.0;
 const GLfloat z_min_persp = 0.1;
 const GLfloat z_max = 1e10;
@@ -123,6 +124,7 @@ void loadModel(std::string file_name) {
 
     v_positions.clear();
     v_colors.clear();
+    positions_sum = glm::vec4(0.0,0.0,0.0,0.0);
 
     GLfloat tmp;
     glm::vec4 vec(0.0,0.0,0.0,1.0);
@@ -255,8 +257,8 @@ void drawGrid(){
 }
 
 
-float unit_rotation = 5e-2;
-float unit_translation = 0.1;
+float unit_rotation = 3.14e-2;
+float unit_translation = 1.0;
 
 void renderModellingMode(GLFWwindow *window){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -273,7 +275,7 @@ void renderModellingMode(GLFWwindow *window){
 void renderInspectionMode(GLFWwindow *window)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
   modelview_matrix = glm::translate(id, (glm::vec3) -positions_sum/(GLfloat) v_positions.size());
 
   if(glfwGetKey(window, GLFW_KEY_LEFT)==GLFW_PRESS){
@@ -318,6 +320,10 @@ void renderInspectionMode(GLFWwindow *window)
 
   modelview_matrix = mat_rotation * modelview_matrix;
   modelview_matrix = glm::translate(id, (glm::vec3) positions_sum/(GLfloat) v_positions.size()) * modelview_matrix;
+  glm::vec4 temp = modelview_matrix * positions_sum/(GLfloat) v_positions.size();
+  for(int i=0; i<3; i++)
+    cout << (positions_sum/(GLfloat) v_positions.size())[i] << " " << temp[i] << " ";
+  cout << endl;
   modelview_matrix = mat_translation * modelview_matrix;
   modelview_matrix = mat_view * modelview_matrix;
   modelview_matrix = mat_persp_proj * modelview_matrix;
