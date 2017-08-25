@@ -42,7 +42,7 @@ void initBuffersGL(void)
 
   glGenBuffers (1, &vbo);
   glBindBuffer (GL_ARRAY_BUFFER, vbo);
-  cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << endl;
+  // cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << endl;
   glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
   glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
   glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
@@ -115,13 +115,13 @@ void loadModel(std::string file_name) {
 
     in_file.close();
 
-    for (int i = 0; i < v_positions.size(); i++) {
-      std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << std::endl;
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < v_positions.size(); i++) {
-      std::cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
-    }
+    // for (int i = 0; i < v_positions.size(); i++) {
+    //   std::cout << v_positions[i][0] << " " << v_positions[i][1] << " " << v_positions[i][2] << std::endl;
+    // }
+    // std::cout << std::endl;
+    // for (int i = 0; i < v_positions.size(); i++) {
+    //   std::cout << v_colors[i][0] << " " << v_colors[i][1] << " " << v_colors[i][2] << std::endl;
+    // }
 
     initBuffersGL();
     initShadersGL();
@@ -156,7 +156,7 @@ void saveModel(std::string file_name) {
 }
 
 void removePoint(){
-  cout << "remove" << endl;
+  // cout << "remove" << endl;
   if(v_positions_loose.empty()){
     v_positions_loose.push_back(v_positions[v_positions.size()-3]);
     v_positions_loose.push_back(v_positions[v_positions.size()-2]);
@@ -175,7 +175,7 @@ void removePoint(){
 void drawPoint(double x, double y) {
   // cout << v_positions.size() << endl;
   // cout << x<< " "<<y<<endl;
-  cout << "draw" << endl;
+  // cout << "draw" << endl;
   GLfloat y_actual = ((y-0)/WINDOW_HEIGHT)*(y_min-y_max) + y_max;
   GLfloat x_actual = ((x-0)/WINDOW_WIDTH)*(y_min-y_max)*aspect_ratio + y_max*aspect_ratio;
   glm::vec4 vec(x_actual, y_actual, 0.1, 1.0);
@@ -207,7 +207,6 @@ float unit_rotation = 5e-2;
 float unit_translation = 0.1;
 
 void renderModellingMode(GLFWwindow *window){
-
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   modelview_matrix = mat_ortho_proj * mat_view;
@@ -324,6 +323,7 @@ int main(int argc, char** argv)
   loadModel("file.raw");
 
   mode = MODE_INSPECTION;
+  cout<< "Inspection Mode" <<endl;
 
   while (glfwWindowShouldClose(window) == 0)
   { 
