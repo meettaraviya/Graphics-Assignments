@@ -3,9 +3,10 @@
 #define WINDOW_WIDTH 768
 #define WINDOW_HEIGHT 512
 
-
+#define GRID_N 32
+#define GRID_M 48
 GLuint shaderProgram;
-GLuint vbo, vao;
+GLuint vbo_triangles, vao_triangles, vao_grid, vbo_grid;
 
 // glm::mat4 rotation_matrix;
 glm::mat4 mat_rotation;
@@ -18,6 +19,8 @@ GLuint uModelViewMatrix;
 
 vector<glm::vec4> v_positions;
 vector<glm::vec4> v_positions_loose;
+vector<glm::vec4> v_grid_lines;
+vector<glm::vec4> v_grid_line_colors;
 glm::vec4 positions_sum;
 vector<glm::vec4> v_colors;
 
@@ -33,31 +36,68 @@ const glm::mat4 id(1.0);
 
 enum Mode mode;
 
-
+void generateGrid(){
+  GLfloat y_gap = (y_max-y_min)/GRID_M;
+  for(int i=1; i<GRID_M; i++){
+    // v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio, y_min+i*y_gap,100.0,0.0));
+    // v_grid_lines.push_back(glm::vec4(y_max*aspect_ratio, y_min+i*y_gap,100.0,0.0));
+    v_grid_lines.push_back(glm::vec4(-1.0, y_min+i*y_gap,0.0,0.0));
+    v_grid_lines.push_back(glm::vec4(1.0, y_min+i*y_gap,0.0,0.0));
+  }
+  GLfloat x_gap = (y_max-y_min)*aspect_ratio/GRID_N;
+  for(int i=1; i<GRID_N; i++){
+    v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio + i*x_gap, y_min,0.0,0.0));
+    v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio + i*x_gap, y_max,0.0,0.0));
+  }
+  v_grid_line_colors.resize(2*(GRID_N+GRID_M-2), glm::vec4(0.0,0.0,1.0,1.0));
+}
 
 void initBuffersGL(void)
 {
-  glGenVertexArrays (1, &vao);
-  glBindVertexArray (vao);
 
-  glGenBuffers (1, &vbo);
-  glBindBuffer (GL_ARRAY_BUFFER, vbo);
-  cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << endl;
+  glGenVertexArrays (1, &vao_grid);
+  glBindVertexArray (vao_grid);
+
+  glGenBuffers (1, &vbo_grid);
+  glBindBuffer (GL_ARRAY_BUFFER, vbo_grid);
+  glBufferData (GL_ARRAY_BUFFER, (v_grid_lines.size() + v_grid_line_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
+  glBufferSubData( GL_ARRAY_BUFFER, 0, v_grid_lines.size() * sizeof(glm::vec4), v_grid_lines.data() );
+  glBufferSubData( GL_ARRAY_BUFFER, v_grid_lines.size() * sizeof(glm::vec4), v_grid_line_colors.size() * sizeof(glm::vec4), v_grid_line_colors.data() );
+
+  GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
+  glEnableVertexAttribArray( vPosition );
+  GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  glEnableVertexAttribArray( vColor );
+  uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+
+  glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_grid_lines.size()*sizeof(glm::vec4)) );
+
+
+////////////////////////////////////////////////////
+  
+  glGenVertexArrays (1, &vao_triangles);
+  glBindVertexArray (vao_triangles);
+
+  glGenBuffers (1, &vbo_triangles);
+  glBindBuffer (GL_ARRAY_BUFFER, vbo_triangles);
+  // cout << (v_positions.size() + v_colors.size()) * sizeof(glm::vec4) << endl;
   glBufferData (GL_ARRAY_BUFFER, (v_positions.size() + v_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
   glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
   glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
 
-  GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
+  vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   glEnableVertexAttribArray( vPosition );
-  glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-
-  GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  vColor = glGetAttribLocation( shaderProgram, "vColor" );
   glEnableVertexAttribArray( vColor );
-  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_positions.size()*sizeof(glm::vec4)) );
-
   uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 
+  glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_positions.size()*sizeof(glm::vec4)) );
+
+
 }
+
 
 void initShadersGL(void)
 {
@@ -202,6 +242,18 @@ void drawPoint(double x, double y) {
 
 //-----------------------------------------------------------------
 
+void drawGrid(){
+  glBindBuffer (GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  glBindVertexArray(vao_grid);
+  glBindBuffer (GL_ARRAY_BUFFER, vbo_grid);
+  glDrawArrays(GL_LINES, 0, v_grid_lines.size());
+  glBindBuffer (GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  glBindBuffer (GL_ARRAY_BUFFER, vbo_triangles);
+  glBindVertexArray(vao_triangles);
+}
+
 
 float unit_rotation = 5e-2;
 float unit_translation = 0.1;
@@ -209,6 +261,8 @@ float unit_translation = 0.1;
 void renderModellingMode(GLFWwindow *window){
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  drawGrid();
 
   modelview_matrix = mat_ortho_proj * mat_view;
 
@@ -305,9 +359,9 @@ int main(int argc, char** argv)
   glewExperimental = GL_TRUE;
   GLenum err = glewInit();
   if (GLEW_OK != err)
-    {
-      cerr<<"GLEW Init Failed : %s"<<endl;
-    }
+  {
+    cerr<<"GLEW Init Failed : %s"<<endl;
+  }
 
   cout<<"Vendor: "<<glGetString (GL_VENDOR)<<endl;
   cout<<"Renderer: "<<glGetString (GL_RENDERER)<<endl;
@@ -321,6 +375,7 @@ int main(int argc, char** argv)
 
   csX75::initGL();
   initShadersGL();
+  generateGrid();
   loadModel("file.raw");
 
   mode = MODE_INSPECTION;
