@@ -56,23 +56,23 @@ void generateGrid(){
 void initBuffersGL(void)
 {
 
-  glGenVertexArrays (1, &vao_grid);
-  glBindVertexArray (vao_grid);
+  // glGenVertexArrays (1, &vao_grid);
+  // glBindVertexArray (vao_grid);
 
-  glGenBuffers (1, &vbo_grid);
-  glBindBuffer (GL_ARRAY_BUFFER, vbo_grid);
-  glBufferData (GL_ARRAY_BUFFER, (v_grid_lines.size() + v_grid_line_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
-  glBufferSubData( GL_ARRAY_BUFFER, 0, v_grid_lines.size() * sizeof(glm::vec4), v_grid_lines.data() );
-  glBufferSubData( GL_ARRAY_BUFFER, v_grid_lines.size() * sizeof(glm::vec4), v_grid_line_colors.size() * sizeof(glm::vec4), v_grid_line_colors.data() );
+  // glGenBuffers (1, &vbo_grid);
+  // glBindBuffer (GL_ARRAY_BUFFER, vbo_grid);
+  // glBufferData (GL_ARRAY_BUFFER, (v_grid_lines.size() + v_grid_line_colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
+  // glBufferSubData( GL_ARRAY_BUFFER, 0, v_grid_lines.size() * sizeof(glm::vec4), v_grid_lines.data() );
+  // glBufferSubData( GL_ARRAY_BUFFER, v_grid_lines.size() * sizeof(glm::vec4), v_grid_line_colors.size() * sizeof(glm::vec4), v_grid_line_colors.data() );
 
-  GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
-  glEnableVertexAttribArray( vPosition );
-  GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" );
-  glEnableVertexAttribArray( vColor );
-  uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+  // GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
+  // glEnableVertexAttribArray( vPosition );
+  // GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  // glEnableVertexAttribArray( vColor );
+  // uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 
-  glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-  glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_grid_lines.size()*sizeof(glm::vec4)) );
+  // glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+  // glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(v_grid_lines.size()*sizeof(glm::vec4)) );
 
 
 ////////////////////////////////////////////////////
@@ -87,9 +87,9 @@ void initBuffersGL(void)
   glBufferSubData( GL_ARRAY_BUFFER, 0, v_positions.size() * sizeof(glm::vec4), v_positions.data() );
   glBufferSubData( GL_ARRAY_BUFFER, v_positions.size() * sizeof(glm::vec4), v_colors.size() * sizeof(glm::vec4), v_colors.data() );
 
-  vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
+  GLuint vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   glEnableVertexAttribArray( vPosition );
-  vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  GLuint vColor = glGetAttribLocation( shaderProgram, "vColor" );
   glEnableVertexAttribArray( vColor );
   uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
 
@@ -214,13 +214,15 @@ void removePoint(){
   }
 }
 
+extern GLfloat modellingModeZ;
+
 void drawPoint(double x, double y) {
   // cout << v_positions.size() << endl;
   // cout << x<< " "<<y<<endl;
   // cout << "draw" << endl;
   GLfloat y_actual = ((y-0)/WINDOW_HEIGHT)*(y_min-y_max) + y_max;
   GLfloat x_actual = ((x-0)/WINDOW_WIDTH)*(y_min-y_max)*aspect_ratio + y_max*aspect_ratio;
-  glm::vec4 vec(x_actual, y_actual, 0.1, 1.0);
+  glm::vec4 vec(x_actual, y_actual, modellingModeZ, 1.0);
   v_positions_loose.push_back(vec);
   if(v_positions_loose.size()==3){
 
@@ -244,26 +246,26 @@ void drawPoint(double x, double y) {
 
 //-----------------------------------------------------------------
 
-void drawGrid(){
-  glBindBuffer (GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
-  glBindVertexArray(vao_grid);
-  glBindBuffer (GL_ARRAY_BUFFER, vbo_grid);
-  glDrawArrays(GL_LINES, 0, v_grid_lines.size());
-  glBindBuffer (GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
-  glBindBuffer (GL_ARRAY_BUFFER, vbo_triangles);
-  glBindVertexArray(vao_triangles);
-}
+// void drawGrid(){
+//   glBindBuffer (GL_ARRAY_BUFFER, 0);
+//   glBindVertexArray(0);
+//   glBindVertexArray(vao_grid);
+//   glBindBuffer (GL_ARRAY_BUFFER, vbo_grid);
+//   glDrawArrays(GL_LINES, 0, v_grid_lines.size());
+//   glBindBuffer (GL_ARRAY_BUFFER, 0);
+//   glBindVertexArray(0);
+//   glBindBuffer (GL_ARRAY_BUFFER, vbo_triangles);
+//   glBindVertexArray(vao_triangles);
+// }
 
 
-float unit_rotation = 3.14e-2;
-float unit_translation = 1.0;
+GLfloat unit_rotation = 3.14e-2;
+GLfloat unit_translation = 1.0;
 
 void renderModellingMode(GLFWwindow *window){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  drawGrid();
+  // drawGrid();
 
   modelview_matrix = mat_ortho_proj * mat_view;
 
@@ -284,16 +286,16 @@ void renderInspectionMode(GLFWwindow *window)
   if(glfwGetKey(window, GLFW_KEY_RIGHT)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3( 0.0, 1.0, 0.0))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_UP)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_DOWN)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3( -1.0, 0.0, 0.00))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_DOWN)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_UP)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(1.0, 0.0, 0.0))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_PAGE_UP)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, 0.0, 1.0))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_PAGE_UP)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, 0.0, -1.0))*mat_rotation;
   }
 

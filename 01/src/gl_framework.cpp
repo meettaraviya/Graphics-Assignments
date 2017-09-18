@@ -3,7 +3,7 @@ using namespace std;
 
 extern GLfloat xrot, yrot, zrot;
 extern enum Mode mode;
-
+extern modellingModeZ = 0.0, modellingModeZStep = 1.0;
 namespace csX75
 {
 //! Initialize GL State
@@ -63,6 +63,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
   }
   if (key == GLFW_KEY_M && action == GLFW_PRESS) {
     cout<< "Modelling Mode" <<endl;
+    cout << "z = " << modellingModeZ << endl;
     mode = MODE_MODELLING;
   }
   if (key == GLFW_KEY_I && action == GLFW_PRESS) {
@@ -75,6 +76,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
   if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
     exit(0);
   }
+  if(key == GLFW_KEY_KP_ADD && action == GLFW_PRESS && mode == MODE_MODELLING){
+    modellingModeZ += modellingModeZStep;
+    cout << "z = " << modellingModeZ << endl;
+  }
+  if(key == GLFW_KEY_KP_SUBTRACT && action == GLFW_PRESS && mode == MODE_MODELLING){
+    modellingModeZ -= modellingModeZStep;
+    cout << "z = " << modellingModeZ << endl;
+  }
+
 }
 };
 
