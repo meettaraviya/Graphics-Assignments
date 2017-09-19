@@ -37,21 +37,21 @@ const glm::mat4 id(1.0);
 
 enum Mode mode;
 
-void generateGrid(){
-  GLfloat y_gap = (y_max-y_min)/GRID_M;
-  for(int i=1; i<GRID_M; i++){
-    // v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio, y_min+i*y_gap,100.0,0.0));
-    // v_grid_lines.push_back(glm::vec4(y_max*aspect_ratio, y_min+i*y_gap,100.0,0.0));
-    v_grid_lines.push_back(glm::vec4(-1.0, y_min+i*y_gap,0.0,0.0));
-    v_grid_lines.push_back(glm::vec4(1.0, y_min+i*y_gap,0.0,0.0));
-  }
-  GLfloat x_gap = (y_max-y_min)*aspect_ratio/GRID_N;
-  for(int i=1; i<GRID_N; i++){
-    v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio + i*x_gap, y_min,0.0,0.0));
-    v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio + i*x_gap, y_max,0.0,0.0));
-  }
-  v_grid_line_colors.resize(2*(GRID_N+GRID_M-2), glm::vec4(0.0,0.0,1.0,1.0));
-}
+// void generateGrid(){
+//   GLfloat y_gap = (y_max-y_min)/GRID_M;
+//   for(int i=1; i<GRID_M; i++){
+//     // v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio, y_min+i*y_gap,100.0,0.0));
+//     // v_grid_lines.push_back(glm::vec4(y_max*aspect_ratio, y_min+i*y_gap,100.0,0.0));
+//     v_grid_lines.push_back(glm::vec4(-1.0, y_min+i*y_gap,0.0,0.0));
+//     v_grid_lines.push_back(glm::vec4(1.0, y_min+i*y_gap,0.0,0.0));
+//   }
+//   GLfloat x_gap = (y_max-y_min)*aspect_ratio/GRID_N;
+//   for(int i=1; i<GRID_N; i++){
+//     v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio + i*x_gap, y_min,0.0,0.0));
+//     v_grid_lines.push_back(glm::vec4(y_min*aspect_ratio + i*x_gap, y_max,0.0,0.0));
+//   }
+//   v_grid_line_colors.resize(2*(GRID_N+GRID_M-2), glm::vec4(0.0,0.0,1.0,1.0));
+// }
 
 void initBuffersGL(void)
 {
@@ -196,12 +196,16 @@ void saveModel(std::string file_name) {
     cerr << "Failed to write to file" << endl;
   }
 }
+GLfloat modellingModeZ = 0;
 
 void removePoint(){
   // cout << "remove" << endl;
   if(v_positions_loose.empty()){
     v_positions_loose.push_back(v_positions[v_positions.size()-3]);
     v_positions_loose.push_back(v_positions[v_positions.size()-2]);
+    glm::vec4 vec = v_positions.back();
+    cout << "Removed point (" << vec[0] << "," << vec[1] << "," << vec[2] << ")" << endl; 
+
     for(int i=0; i<3; i++){
       positions_sum = positions_sum - v_positions.back();
       v_positions.pop_back();
@@ -214,7 +218,6 @@ void removePoint(){
   }
 }
 
-extern GLfloat modellingModeZ;
 
 void drawPoint(double x, double y) {
   // cout << v_positions.size() << endl;
@@ -224,6 +227,7 @@ void drawPoint(double x, double y) {
   GLfloat x_actual = ((x-0)/WINDOW_WIDTH)*(y_min-y_max)*aspect_ratio + y_max*aspect_ratio;
   glm::vec4 vec(x_actual, y_actual, modellingModeZ, 1.0);
   v_positions_loose.push_back(vec);
+  cout << "Added point (" << vec[0] << "," << vec[1] << "," << vec[2] << ")" << endl; 
   if(v_positions_loose.size()==3){
 
     glm::vec4 color(0.0, 0.0, 0.0, 1.0);
@@ -259,8 +263,8 @@ void drawPoint(double x, double y) {
 // }
 
 
-GLfloat unit_rotation = 3.14e-2;
-GLfloat unit_translation = 1.0;
+float unit_rotation = 3.14e-2;
+float unit_translation = 1.0;
 
 void renderModellingMode(GLFWwindow *window){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -286,16 +290,16 @@ void renderInspectionMode(GLFWwindow *window)
   if(glfwGetKey(window, GLFW_KEY_RIGHT)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3( 0.0, 1.0, 0.0))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_DOWN)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_UP)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3( -1.0, 0.0, 0.00))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_UP)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_DOWN)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(1.0, 0.0, 0.0))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_PAGE_UP)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, 0.0, 1.0))*mat_rotation;
   }
-  if(glfwGetKey(window, GLFW_KEY_PAGE_UP)==GLFW_PRESS){
+  if(glfwGetKey(window, GLFW_KEY_PAGE_DOWN)==GLFW_PRESS){
     mat_rotation = glm::rotate(id,unit_rotation, glm::vec3(0.0, 0.0, -1.0))*mat_rotation;
   }
 
@@ -324,8 +328,8 @@ void renderInspectionMode(GLFWwindow *window)
   modelview_matrix = glm::translate(id, (glm::vec3) positions_sum/(GLfloat) v_positions.size()) * modelview_matrix;
   glm::vec4 temp = modelview_matrix * positions_sum/(GLfloat) v_positions.size();
   for(int i=0; i<3; i++)
-    cout << (positions_sum/(GLfloat) v_positions.size())[i] << " " << temp[i] << " ";
-  cout << endl;
+    //cout << (positions_sum/(GLfloat) v_positions.size())[i] << " " << temp[i] << " ";
+  // cout << endl;
   modelview_matrix = mat_translation * modelview_matrix;
   modelview_matrix = mat_view * modelview_matrix;
   modelview_matrix = mat_persp_proj * modelview_matrix;
@@ -382,8 +386,8 @@ int main(int argc, char** argv)
 
   csX75::initGL();
   initShadersGL();
-  generateGrid();
-  loadModel("file.raw");
+  // generateGrid();
+  loadModel("ham.raw");
 
   mode = MODE_INSPECTION;
   cout<< "Inspection Mode" <<endl;

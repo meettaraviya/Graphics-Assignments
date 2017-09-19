@@ -1,3 +1,7 @@
+from math import cos, sin, radians
+
+
+print """
 0 20 1 1 1 1
 -4.49 6.18 1 1 1 1
 0 0 1 1 1 1
@@ -89,3 +93,50 @@
 -6.180 19.021 1  0 0 1
 -0.000 20.000 1  0 0 1
 -4.49 6.18 1  0 0 1
+
+"""
+
+def point(i, r,z,col):
+	print(("%3.1f %3.1f %3.1f %s")%(r*sin(radians(i*36)), r*cos(radians(i*36)),z,col))
+
+for i in xrange(10):
+	z1 = 4-3
+	z2 = 6.5-3
+	r1 = 20.0
+	r2 = 31.3
+	col = "1 0 0"
+	point(i, r1,z1, col)
+	point(i, r2,z2, col)
+	point(i+1,r1,z1, col)
+	point(i+1,r1,z1, col)
+	point(i, r2,z2, col)
+	point(i+1,r2,z2, col)
+	print ""
+
+for i in xrange(10):
+	z1 = 6.5-3
+	z2 = 12-3
+	r1 = 31.3
+	r2 = 42.07
+	col = "1 1 1"
+	point(i, r1,z1, col)
+	point(i, r2,z2, col)
+	point(i+1,r1,z1, col)
+	point(i+1,r1,z1, col)
+	point(i, r2,z2, col)
+	point(i+1,r2,z2, col)
+	print ""
+
+for i in xrange(10):
+	z1 = 12-3
+	z2 = 19-3
+	r1 = 42.07
+	r2 = 52.41
+	col = "1 0 0"
+	point(i, r1,z1, col)
+	point(i, r2,z2, col)
+	point(i+1,r1,z1, col)
+	point(i+1,r1,z1, col)
+	point(i, r2,z2, col)
+	point(i+1,r2,z2, col)
+	print ""
