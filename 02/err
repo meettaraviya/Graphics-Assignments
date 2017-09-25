@@ -1,0 +1,18 @@
+/tmp/ccKIE3L8.o:(.bss+0x0): multiple definition of `RealView::mat_ortho_proj'
+/tmp/ccrDLNsU.o:(.bss+0x0): first defined here
+/tmp/ccKIE3L8.o: In function `csX75::initGL()':
+/home/hell-raiser/Graphics/Assignments/02/src/gl_framework.cpp:16: multiple definition of `World::mat_rotation'
+/tmp/ccrDLNsU.o:/home/hell-raiser/Graphics/Assignments/02/src/main.cpp:15: first defined here
+/tmp/ccKIE3L8.o: In function `csX75::framebuffer_size_callback(GLFWwindow*, int, int)':
+/home/hell-raiser/Graphics/Assignments/02/src/gl_framework.cpp:26: multiple definition of `World::mat_translation'
+/tmp/ccrDLNsU.o:/home/hell-raiser/Graphics/Assignments/02/src/main.cpp:18: first defined here
+/tmp/cc3JkawZ.o:(.bss+0x0): multiple definition of `RealView::mat_ortho_proj'
+/tmp/ccrDLNsU.o:/home/hell-raiser/Graphics/Assignments/02/src/main.cpp:14: first defined here
+/tmp/cc3JkawZ.o: In function `glm::tvec3<float, (glm::precision)0>::tvec3(float const&, float const&, float const&)':
+/home/hell-raiser/Graphics/Assignments/02/src/Transformation.cpp:4: multiple definition of `World::mat_rotation'
+/tmp/ccrDLNsU.o:/home/hell-raiser/Graphics/Assignments/02/src/main.cpp:15: first defined here
+/tmp/cc3JkawZ.o: In function `glm::tvec3<float, (glm::precision)0> glm::normalize<float, (glm::precision)0, glm::tvec3>(glm::tvec3<float, (glm::precision)0> const&)':
+/home/hell-raiser/Graphics/Assignments/02/src/Transformation.cpp:5: multiple definition of `World::mat_translation'
+/tmp/ccrDLNsU.o:/home/hell-raiser/Graphics/Assignments/02/src/main.cpp:18: first defined here
+collect2: error: ld returned 1 exit status
+make: *** [assignment2] Error 1

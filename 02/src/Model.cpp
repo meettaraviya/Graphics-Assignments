@@ -2,11 +2,15 @@
 
 using namespace std;
 
-Model::Model(GLuint vPosition, GLuint vColor, GLuint vArray, int shape){
+Model::Model(GLuint vPosition, GLuint vColor, int shape){
+	glGenVertexArrays (1, &vao);
+	glBindVertexArray (vao);
+	glEnableVertexAttribArray(vPosition);
+	glEnableVertexAttribArray(vColor);
+	
 	draw_mode = shape;
 	attrib_pos = vPosition;
 	attrib_col = vColor;
-	vao = vArray;
 }
 
 void Model::fromFile(string inFileName){
@@ -57,3 +61,4 @@ void Model::render(){
 	}
 	
 }
+

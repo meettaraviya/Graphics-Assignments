@@ -1,16 +1,9 @@
 #ifndef _SHADER_UTIL_HPP_
 #define _SHADER_UTIL_HPP_
 
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <stdexcept>
+#include "Include.hpp"
 
 using namespace std;
-
 
 namespace csX75
 {

@@ -1,5 +1,4 @@
 #include "gl_framework.hpp"
-using namespace std;
 
 namespace csX75
 {
@@ -33,7 +32,7 @@ namespace csX75
   void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
   {
     if(key == GLFW_KEY_R && action == GLFW_PRESS){
-      centreToCentroid();
+      World::centre();
     }
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
       exit(0);
