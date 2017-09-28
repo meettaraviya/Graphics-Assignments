@@ -81,10 +81,10 @@ void LineArray::loadFrustum(){
 	glm::vec3 right = glm::cross(View::lookat,View::up);
 	glm::vec3 n = View::getN(), u = View::getU(), v = View::getV();
 	vector <glm::vec3>temp({
-		-(n*View::n) + (v*View::t) - (u*View::r),
-		-(n*View::n) + (v*View::t) - (u*View::l),
-		-(n*View::n) + (v*View::b) - (u*View::r),
-		-(n*View::n) + (v*View::b) - (u*View::l)
+		-(n*View::n) + (v*View::t) + (u*View::r),
+		-(n*View::n) + (v*View::t) + (u*View::l),
+		-(n*View::n) + (v*View::b) + (u*View::r),
+		-(n*View::n) + (v*View::b) + (u*View::l)
 	});
 	for(int i=0;i<4;i++){
 		temp.push_back(temp[i]*(View::f/View::n) + View::eye);
@@ -109,17 +109,27 @@ void LineArray::loadFrustum(){
 	glLineWidth(lineWidth);
 }
 
+glm::vec4 LineArray::axesColors[6] = {
+		glm::vec4({0.0, 1.0, 1.0, 1.0}),
+		glm::vec4({1.0, 0.0, 0.0, 1.0}),
+		glm::vec4({1.0, 0.0, 1.0, 1.0}),
+		glm::vec4({0.0, 1.0, 0.0, 1.0}),
+		glm::vec4({1.0, 1.0, 0.0, 1.0}),
+		glm::vec4({0.0, 0.0, 1.0, 1.0}),
+	};
+
 void LineArray::loadAxes(){
 	Part *part = new Part;
 
 	glm::vec4 axisPoint(0.0,0.0,0.0,1.0);
 	for(int i=0; i<3; i++){
+		axisPoint[i] = -lineLength;
 		part->vertices.push_back(axisPoint);
 		axisPoint[i] = lineLength;
 		part->vertices.push_back(axisPoint);
 		axisPoint[i] = 0.0;
-		// part->colors.push_back(axesColors[2*i]);
-		// part->colors.push_back(axesColors[2*i+1]);
+		part->colors.push_back(axesColors[2*i]);
+		part->colors.push_back(axesColors[2*i+1]);
 	}
 	parts.push_back(part);
 

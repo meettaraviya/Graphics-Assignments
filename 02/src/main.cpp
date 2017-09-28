@@ -45,15 +45,20 @@ void renderScene(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  // viewAxes.render();
+  viewAxes.render();
 
-  modelview_matrix = modelview_matrix *
+  modelview_matrix = RealView::mat_ortho_proj * 
+                      RealView::mat_lookat *
+                      World::mat_translation *
+                      World::mat_rotation *
                       View::mat_view;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
   model.render();
   viewFrustum.render();
+  glm::vec4 newCenter = modelview_matrix*viewFrustum.frustumCenter;
+  cout << newCenter[0] << " " << newCenter[1] << " " << newCenter[2] << endl;
   viewEye.render();
 
 }
@@ -87,8 +92,8 @@ void loadScene(char* sceneFileName){
   viewFrustum.loadFrustum();
   viewFrustum.loadBuffers(0);
 
-  // viewAxes.loadAxes();
-  // viewAxes.loadBuffers(0);
+  viewAxes.loadAxes();
+  viewAxes.loadBuffers(0);
 
   cout << View::eye[0] << " " << View::eye[1] << " " << View::eye[2] << " " << endl;
 

@@ -34,19 +34,34 @@ namespace View{
 			{u[0],v[0],n[0],0.0},
 			{u[1],v[1],n[1],0.0},
 			{u[2],v[2],n[2],0.0},
-			{0.0, 0.0, 0.0,1.0},
+			{0.0,0.0,0.0,1.0},
 		});
 		mat_view = rotate*eyeToOrigin*mat_view;
 	}
 
 	void VCStoCCS(){	
-		glm::mat4 normalscaleshear({
+		glm::mat4 shear({
+			{1.0, 0.0, 0.0, 0.0},
+			{0.0, 1.0, 0.0, 0.0},
+			{(r+l)/(2*n), (t+b)/(2*n), 1.0, 0.0},
+			{0.0, 0.0, 0.0, 1.0},
+		});
+
+		glm::mat4 scale({
 			{(2*n)/(r-l), 0.0, 0.0, 0.0},
 			{0.0, (2*n)/(t-b), 0.0, 0.0},
-			{(r+l)/(r-l), (t+b)/(t-b), -(f+n)/(f-n), -1.0},
+			{0.0, 0.0, 1.0, 0.0},
+			{0.0, 0.0, 0.0, 1.0}
+		});
+
+		glm::mat4 normalize({
+			{1.0, 0.0, 0.0, 0.0},
+			{0.0, 1.0, 0.0, 0.0},
+			{0.0, 0.0, -(f+n)/(f-n), -1.0},
 			{0.0, 0.0, -(2*f*n)/(f-n), 0.0},
 		});
-		mat_view = normalscaleshear*mat_view;
+		mat_view = normalize*scale*shear*mat_view;
+
 	}
 
 	void CCStoNDCS(){
@@ -54,7 +69,13 @@ namespace View{
 	}
 
 	void NDCStoDCS(){
-		
+		glm::mat4 fittowindow({
+			{(R-L)/2, 0.0, 0.0, 0.0},
+			{0.0, (T-B)/2, 0.0, 0.0},
+			{0.0, 0.0, 0.5, 0.0},
+			{(R+L)/2, (T+B)/2, 0.5, 1.0},
+		});
+		mat_view = fittowindow*mat_view;
 	}
 
 };

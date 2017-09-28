@@ -37,6 +37,9 @@ namespace csX75
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
       exit(0);
     }
+    if(key == GLFW_KEY_0 && action == GLFW_PRESS){
+      View::reset();
+    }
     if(key == GLFW_KEY_1 && action == GLFW_PRESS){
       View::toVCS();
     }
