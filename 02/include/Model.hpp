@@ -35,7 +35,7 @@ public:
 class LineArray: public Model{
 	static constexpr GLfloat lineWidth = 10.0;
 	static constexpr GLfloat lineLength = 1000.0;
-	// static constexpr glm::vec4 axesColors[6];
+	static glm::vec4 axesColors[6];
 public:
 	LineArray(){}
 	LineArray(GLuint vPosition, GLuint vColor);

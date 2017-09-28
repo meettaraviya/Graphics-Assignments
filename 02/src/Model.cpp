@@ -109,6 +109,15 @@ void LineArray::loadFrustum(){
 	glLineWidth(lineWidth);
 }
 
+glm::vec4 LineArray::axesColors[6] = {
+		glm::vec4({0.0, 1.0, 1.0, 1.0}),
+		glm::vec4({1.0, 0.0, 0.0, 1.0}),
+		glm::vec4({1.0, 0.0, 1.0, 1.0}),
+		glm::vec4({0.0, 1.0, 0.0, 1.0}),
+		glm::vec4({1.0, 1.0, 0.0, 1.0}),
+		glm::vec4({0.0, 0.0, 1.0, 1.0}),
+	};
+
 void LineArray::loadAxes(){
 	Part *part = new Part;
 
@@ -118,8 +127,8 @@ void LineArray::loadAxes(){
 		axisPoint[i] = lineLength;
 		part->vertices.push_back(axisPoint);
 		axisPoint[i] = 0.0;
-		// part->colors.push_back(axesColors[2*i]);
-		// part->colors.push_back(axesColors[2*i+1]);
+		part->colors.push_back(axesColors[2*i]);
+		part->colors.push_back(axesColors[2*i+1]);
 	}
 	parts.push_back(part);
 
