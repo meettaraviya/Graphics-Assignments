@@ -6,11 +6,11 @@ GLFWLIB = -lglfw
 GLUTLIB = -lglut
 LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB) $(GLUTLIB)
 LDFLAGS=-L/usr/local/lib 
-CPPFLAGS=-I/usr/local/include -I./include/ -g
+CPPFLAGS=-I./include/ -g
 
 BIN=assignment2
-SRCS=src/main.cpp src/gl_framework.cpp src/shader_util.cpp src/Model.cpp src/Transformation.cpp
-INCLUDES=include/
+SRCS=src/*
+INCLUDES=include/*
 
 all: $(BIN)
 

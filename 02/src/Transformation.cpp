@@ -41,31 +41,54 @@ void Model::centre(int index){
 	}
 }
 namespace World{
-void rotate(){
-	for(int i=0; i<6; i++){
-	    if(glfwGetKey(window, rotation_keys[i])==GLFW_PRESS){
-	      mat_rotation = glm::rotate(id,unit_rotation, axes[i])*mat_rotation;
-	    }
+	glm::mat4 mat_rotation, mat_translation;
+	const GLfloat unit_rotation = 3.14e-2, unit_translation = 1.0;
+	const glm::vec3 axes[6] = {
+	  glm::vec3(1.0, 0.0, 0.0),
+	  glm::vec3(-1.0, 0.0, 0.0),
+	  glm::vec3(0.0, 1.0, 0.0),
+	  glm::vec3(0.0, -1.0, 0.0),
+	  glm::vec3(0.0, 0.0, 1.0),
+	  glm::vec3(0.0, 0.0, -1.0),
+	};
+	const GLuint rotation_keys[6] = {
+	  GLFW_KEY_UP,
+	  GLFW_KEY_DOWN,
+	  GLFW_KEY_RIGHT,
+	  GLFW_KEY_LEFT,
+	  GLFW_KEY_PAGE_DOWN,
+	  GLFW_KEY_PAGE_UP,
+	};
+	const GLuint translation_keys[6] = {
+	  GLFW_KEY_A,
+	  GLFW_KEY_D,
+	  GLFW_KEY_W,
+	  GLFW_KEY_S,
+	  GLFW_KEY_X,
+	  GLFW_KEY_Z,
+	};
+	void rotate(){
+		for(int i=0; i<6; i++){
+		    if(glfwGetKey(window, rotation_keys[i])==GLFW_PRESS){
+		      mat_rotation = glm::rotate(id,unit_rotation, axes[i])*mat_rotation;
+		    }
+		}
 	}
-}
 
-void translate(){
-	for(int i=0; i<4; i++){
-	    if(glfwGetKey(window, translation_keys[i])==GLFW_PRESS){
-	      mat_translation = glm::translate(mat_translation, unit_translation*axes[i]);
-	    }
+	void translate(){
+		for(int i=0; i<4; i++){
+		    if(glfwGetKey(window, translation_keys[i])==GLFW_PRESS){
+		      mat_translation = glm::translate(mat_translation, unit_translation*axes[i]);
+		    }
+		}
 	}
-}
 
-void centre(){
-	mat_translation = id;
-}
+	void centre(){
+		mat_translation = id;
+	}
 
-void update(){
-	rotate();
-	translate();
-}
+	void update(){
+		rotate();
+		translate();
+	}
 };
-// RealView::zoom(){
-// 	if(glfw)
-// }

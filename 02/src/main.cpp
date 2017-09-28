@@ -7,8 +7,11 @@ GLuint shaderProgram, vPosition, vColor, uModelViewMatrix;
 glm::mat4 modelview_matrix;
 
 Model model;
+PointArray viewEye;
+LineArray viewFrustum, viewAxes;
 
-const glm::vec4 bg_color(0.53, 0.80, 0.98, 1.0);
+const glm::vec4 bg_color(0.2, 1.0, 0.2, 1.0);
+const glm::vec4 eye_color(1.0, 0.0, 0.0, 1.0);
 
 void initShadersGL(void)
 {
@@ -33,6 +36,7 @@ void renderScene(GLFWwindow *window)
   glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
 
   World::update();
+  RealView::update();
 
   modelview_matrix = RealView::mat_ortho_proj * 
                       RealView::mat_lookat *
@@ -41,7 +45,52 @@ void renderScene(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
+  // viewAxes.render();
+
+  modelview_matrix = modelview_matrix *
+                      View::mat_view;
+
+  glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
+
   model.render();
+  viewFrustum.render();
+  viewEye.render();
+
+}
+
+
+void loadScene(char* sceneFileName){
+  FILE *sceneFile = fopen(sceneFileName, "r");
+  char rawFileName[20];
+  glm::vec4 scale(0.0,0.0,0.0,1.0), rot(0.0,0.0,0.0,1.0), translate(0.0,0.0,0.0,1.0);
+  for(int i=0;i<3;i++){
+    fscanf(sceneFile,"%s",rawFileName);
+    fscanf(sceneFile,"%f %f %f",&scale[0],&scale[1],&scale[2]);
+    fscanf(sceneFile,"%f %f %f",&rot[0],&rot[1],&rot[2]);
+    fscanf(sceneFile,"%f %f %f",&translate[0],&translate[1],&translate[2]);
+    model.fromFile(rawFileName);
+    model.scale(i,scale[0],scale[1],scale[2]);
+    model.rotate(i,rot[0],rot[1],rot[2]);
+    model.translate(i,translate[0],translate[1],translate[2]);
+    model.loadBuffers(i);
+  }
+
+  fscanf(sceneFile,"%f %f %f",&View::eye[0],&View::eye[1],&View::eye[2]);
+  fscanf(sceneFile,"%f %f %f",&View::lookat[0],&View::lookat[1],&View::lookat[2]);
+  fscanf(sceneFile,"%f %f %f",&View::up[0],&View::up[1],&View::up[2]);
+  fscanf(sceneFile,"%f %f %f %f %f %f",&View::l,&View::r,&View::t,&View::b,&View::n,&View::f);
+
+  viewEye = PointArray(vPosition, vColor);
+  viewEye.fromPoint(View::eye, eye_color);
+  viewEye.loadBuffers(0);
+
+  viewFrustum.loadFrustum();
+  viewFrustum.loadBuffers(0);
+
+  // viewAxes.loadAxes();
+  // viewAxes.loadBuffers(0);
+
+  cout << View::eye[0] << " " << View::eye[1] << " " << View::eye[2] << " " << endl;
 
 }
 
@@ -51,11 +100,10 @@ int main(int argc, char** argv)
 
   initShadersGL();
   model = Model(vPosition,vColor, GL_TRIANGLES);
-  
-  model.fromFile("models/ham.raw");
-  model.fromFile("models/capt.raw");
-  model.fromFile("models/arrow.raw");
-  model.scale(1,2,3,4);
+  viewFrustum = LineArray(vPosition,vColor);
+  viewAxes = LineArray(vPosition,vColor);
+
+  loadScene( (char*) "scenes/myscene.scn");
 
   while (glfwWindowShouldClose(window) == 0)
   { 

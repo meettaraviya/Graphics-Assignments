@@ -8,5 +8,7 @@
 #include "shader_util.hpp"
 #include "Model.hpp"
 #include "Transformation.hpp"
+#include "RealView.hpp"
+#include "View.hpp"
 
 #endif

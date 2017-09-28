@@ -2,9 +2,10 @@
 #define _MODEL_HPP_
 
 #include "Include.hpp"
+#include "View.hpp"
 
 class Model{
-
+protected:
 	struct Part{
 		vector<glm::vec4> vertices;
 		vector<glm::vec4> colors;
@@ -18,7 +19,8 @@ class Model{
 public:
 	Model(){}
 	Model(GLuint vPosition, GLuint vColor, int shape);
-	void fromFile(string inFileName);
+	void fromFile(char* inFileName);
+	void loadBuffers(int index);
 	void render();
 
 	// defined in Transformation.cpp
@@ -27,6 +29,26 @@ public:
 	void translate(int index, GLfloat tx, GLfloat ty, GLfloat tz);
 	void centre(int index);
 
+
+};
+
+class LineArray: public Model{
+	static constexpr GLfloat lineWidth = 10.0;
+	static constexpr GLfloat lineLength = 1000.0;
+	// static constexpr glm::vec4 axesColors[6];
+public:
+	LineArray(){}
+	LineArray(GLuint vPosition, GLuint vColor);
+	void loadFrustum();
+	void loadAxes();
+};
+
+class PointArray: public Model{
+	static constexpr GLfloat pointSize = 10.0;
+public:
+	PointArray(){}
+	PointArray(GLuint vPosition, GLuint vColor);
+	void fromPoint(glm::vec3 point, glm::vec4 color);
 };
 
 #endif
