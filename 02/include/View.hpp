@@ -7,6 +7,7 @@ namespace View{
 	extern glm::mat4 mat_view;
 	extern glm::vec3 eye, lookat, up;
 	extern GLfloat l,r,t,b,n,f;
+	extern GLfloat L,R,T,B;
 
 	glm::vec3 getV();
 	glm::vec3 getU();
@@ -20,7 +21,7 @@ namespace View{
 
 	inline void toVCS(){reset(); WCStoVCS();}
 	inline void toCCS(){toVCS(); VCStoCCS();}
-	inline void toNDCS(){toNDCS(); CCStoNDCS();}
+	inline void toNDCS(){toCCS(); CCStoNDCS();}
 	inline void toDCS(){toNDCS(); NDCStoDCS();}
 };
 

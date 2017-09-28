@@ -6,7 +6,7 @@ GLFWLIB = -lglfw
 GLUTLIB = -lglut
 LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB) $(GLUTLIB)
 LDFLAGS=-L/usr/local/lib 
-CPPFLAGS=-I./include/ -g
+CPPFLAGS=-I./include/ -g -std=c++11
 
 BIN=assignment2
 SRCS=src/*
