@@ -2,7 +2,7 @@
 
 GLFWwindow* window;
 
-GLuint shaderProgram, vPosition, vColor, uModelViewMatrix;
+GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, divideByWLoc;
 
 glm::mat4 modelview_matrix;
 
@@ -27,6 +27,9 @@ void initShadersGL(void)
 
   vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   vColor = glGetAttribLocation( shaderProgram, "vColor" );
+
+  uModelViewMatrix = glGetUniformLocation( shaderProgram, "uModelViewMatrix");
+  divideByWLoc = glGetUniformLocation( shaderProgram, "divideByW");
 
 }
 
@@ -54,6 +57,9 @@ void renderScene(GLFWwindow *window)
                       View::mat_view;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
+
+  glUniform1i(divideByWLoc, View::divideByW);
+
 
   model.render();
   viewFrustum.render();

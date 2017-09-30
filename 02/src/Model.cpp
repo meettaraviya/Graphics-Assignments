@@ -129,8 +129,8 @@ void LineArray::loadAxes(){
 			axisPoint[i] = j+1;
 			part->vertices.push_back(axisPoint);
 			axisPoint[i] = 0.0;
-			part->colors.push_back(axesColors[2*i+j%2]);
-			part->colors.push_back(axesColors[2*i+j%2]);
+			part->colors.push_back(axesColors[2*i+abs(j)%2]);
+			part->colors.push_back(axesColors[2*i+abs(j)%2]);
 		}
 		
 	}

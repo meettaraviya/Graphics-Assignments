@@ -6,6 +6,7 @@ namespace View{
 	glm::vec3 eye, lookat, up;
 	GLfloat l,r,t,b,n,f;
 	GLfloat L=0,R=WINDOW_WIDTH,T=WINDOW_HEIGHT,B=0;
+	GLuint divideByW=0;
 
 	glm::vec3 getN(){
 		return glm::normalize(eye-lookat);
@@ -23,14 +24,15 @@ namespace View{
 		for(int i=0; i<3; i++){
 			cout << n[i] << " " << u[i] << " " << v[i] << endl; 
 		}
+		divideByW = 0;
 
-		cout << endl << "Reset" << endl;
-		int vert[9] = {0,1,5,4,8,9,13,12,24};
-		for(int i=0; i<9; i++){
-			glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
-			cout << out[0] << " " << out[1] << " " << out[2] << endl;	
-		}
-		cout << endl;
+		// cout << endl << "Reset" << endl;
+		// int vert[9] = {0,1,5,4,8,9,13,12,24};
+		// for(int i=0; i<9; i++){
+		// 	glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
+		// 	cout << out[0] << " " << out[1] << " " << out[2] << endl;	
+		// }
+		// cout << endl;
 	}
 
 	void WCStoVCS(){
@@ -49,13 +51,13 @@ namespace View{
 		});
 		mat_view = rotate*eyeToOrigin*mat_view;
 
-		cout << "WCStoVCS" << endl;
-		int vert[9] = {0,1,5,4,8,9,13,12,24};
-		for(int i=0; i<9; i++){
-			glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
-			cout << out[0] << " " << out[1] << " " << out[2] << endl;	
-		}
-		cout << endl;
+		// cout << "WCStoVCS" << endl;
+		// int vert[9] = {0,1,5,4,8,9,13,12,24};
+		// for(int i=0; i<9; i++){
+		// 	glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
+		// 	cout << out[0] << " " << out[1] << " " << out[2] << endl;	
+		// }
+		// cout << endl;
 	}
 
 	void VCStoCCS(){	
@@ -82,25 +84,25 @@ namespace View{
 		mat_view = normalize*scale*shear*mat_view;
 
 
-		cout << "VCStoCCS" << endl;
-		int vert[9] = {0,1,5,4,8,9,13,12,24};
-		for(int i=0; i<9; i++){
-			glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
-			cout << out[0] << " " << out[1] << " " << out[2] << endl;	
-		}
-		cout << endl;
+		// cout << "VCStoCCS" << endl;
+		// int vert[9] = {0,1,5,4,8,9,13,12,24};
+		// for(int i=0; i<9; i++){
+		// 	glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
+		// 	cout << out[0] << " " << out[1] << " " << out[2] << endl;	
+		// }
+		// cout << endl;
 
 	}
 
 	void CCStoNDCS(){
-
-		cout << "CCStoNDCS" << endl;
-		int vert[9] = {0,1,5,4,8,9,13,12,24};
-		for(int i=0; i<9; i++){
-			glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
-			cout << out[0] << " " << out[1] << " " << out[2] << endl;	
-		}
-		cout << endl;
+		divideByW = 1;
+		// cout << "CCStoNDCS" << endl;
+		// int vert[9] = {0,1,5,4,8,9,13,12,24};
+		// for(int i=0; i<9; i++){
+		// 	glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
+		// 	cout << out[0] << " " << out[1] << " " << out[2] << endl;	
+		// }
+		// cout << endl;
 	}
 
 	void NDCStoDCS(){
@@ -113,13 +115,13 @@ namespace View{
 		mat_view = fitToWindow*mat_view;
 
 
-		cout << "NDCStoDCS" << endl;
-		int vert[9] = {0,1,5,4,8,9,13,12,24};
-		for(int i=0; i<9; i++){
-			glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
-			cout << out[0] << " " << out[1] << " " << out[2] << endl;	
-		}
-		cout << endl;
+		// cout << "NDCStoDCS" << endl;
+		// int vert[9] = {0,1,5,4,8,9,13,12,24};
+		// for(int i=0; i<9; i++){
+		// 	glm::vec4 out = mat_view* viewFrustum.parts[0]->vertices[vert[i]];
+		// 	cout << out[0] << " " << out[1] << " " << out[2] << endl;	
+		// }
+		// cout << endl;
 	}
 
 };
