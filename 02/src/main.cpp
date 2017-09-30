@@ -8,9 +8,9 @@ glm::mat4 modelview_matrix;
 
 Model model;
 PointArray viewEye;
-LineArray viewFrustum, viewAxes;
+// LineArray viewFrustum, viewAxes;
 
-const glm::vec4 bg_color(0.2, 1.0, 0.2, 1.0);
+const glm::vec4 bg_color(0.9, 0.9, 0.9, 1.0);
 const glm::vec4 eye_color(1.0, 0.0, 0.0, 1.0);
 
 void initShadersGL(void)
@@ -57,8 +57,6 @@ void renderScene(GLFWwindow *window)
 
   model.render();
   viewFrustum.render();
-  glm::vec4 newCenter = modelview_matrix*viewFrustum.frustumCenter;
-  cout << newCenter[0] << " " << newCenter[1] << " " << newCenter[2] << endl;
   viewEye.render();
 
 }
@@ -94,9 +92,6 @@ void loadScene(char* sceneFileName){
 
   viewAxes.loadAxes();
   viewAxes.loadBuffers(0);
-
-  cout << View::eye[0] << " " << View::eye[1] << " " << View::eye[2] << " " << endl;
-
 }
 
 int main(int argc, char** argv)

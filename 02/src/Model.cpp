@@ -123,13 +123,16 @@ void LineArray::loadAxes(){
 
 	glm::vec4 axisPoint(0.0,0.0,0.0,1.0);
 	for(int i=0; i<3; i++){
-		axisPoint[i] = -lineLength;
-		part->vertices.push_back(axisPoint);
-		axisPoint[i] = lineLength;
-		part->vertices.push_back(axisPoint);
-		axisPoint[i] = 0.0;
-		part->colors.push_back(axesColors[2*i]);
-		part->colors.push_back(axesColors[2*i+1]);
+		for(int j=0; j<lineLength; j++){
+			axisPoint[i] = j-lineLength/2;
+			part->vertices.push_back(axisPoint);
+			axisPoint[i] = j+1-lineLength/2;
+			part->vertices.push_back(axisPoint);
+			axisPoint[i] = 0.0;
+			part->colors.push_back(axesColors[2*i+j%2]);
+			part->colors.push_back(axesColors[2*i+j%2]);
+		}
+		
 	}
 	parts.push_back(part);
 
@@ -154,3 +157,6 @@ void PointArray::fromPoint(glm::vec3 point, glm::vec4 color){
 	parts.push_back(part);
 	glPointSize(pointSize);
 }
+
+
+LineArray viewFrustum, viewAxes;

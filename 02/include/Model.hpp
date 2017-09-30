@@ -14,9 +14,9 @@ protected:
 
 	GLuint vao, attrib_col, attrib_pos;
 	int draw_mode;
-	vector<struct Part*> parts;
 
 public:
+	vector<struct Part*> parts;
 	Model(){}
 	Model(GLuint vPosition, GLuint vColor, int shape);
 	void fromFile(char* inFileName);
@@ -51,5 +51,8 @@ public:
 	PointArray(GLuint vPosition, GLuint vColor);
 	void fromPoint(glm::vec3 point, glm::vec4 color);
 };
+
+
+extern LineArray viewFrustum, viewAxes;
 
 #endif
