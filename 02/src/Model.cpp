@@ -110,12 +110,12 @@ void LineArray::loadFrustum(){
 }
 
 glm::vec4 LineArray::axesColors[6] = {
-		glm::vec4({0.0, 1.0, 1.0, 1.0}),
 		glm::vec4({1.0, 0.0, 0.0, 1.0}),
-		glm::vec4({1.0, 0.0, 1.0, 1.0}),
+		glm::vec4({0.0, 1.0, 1.0, 1.0}),
 		glm::vec4({0.0, 1.0, 0.0, 1.0}),
-		glm::vec4({1.0, 1.0, 0.0, 1.0}),
+		glm::vec4({1.0, 0.0, 1.0, 1.0}),
 		glm::vec4({0.0, 0.0, 1.0, 1.0}),
+		glm::vec4({1.0, 1.0, 0.0, 1.0}),
 	};
 
 void LineArray::loadAxes(){
@@ -123,10 +123,10 @@ void LineArray::loadAxes(){
 
 	glm::vec4 axisPoint(0.0,0.0,0.0,1.0);
 	for(int i=0; i<3; i++){
-		for(int j=0; j<lineLength; j++){
-			axisPoint[i] = j-lineLength/2;
+		for(int j=-lineLength; j<lineLength; j++){
+			axisPoint[i] = j;
 			part->vertices.push_back(axisPoint);
-			axisPoint[i] = j+1-lineLength/2;
+			axisPoint[i] = j+1;
 			part->vertices.push_back(axisPoint);
 			axisPoint[i] = 0.0;
 			part->colors.push_back(axesColors[2*i+j%2]);

@@ -10,7 +10,7 @@ Model model;
 PointArray viewEye;
 // LineArray viewFrustum, viewAxes;
 
-const glm::vec4 bg_color(0.9, 0.9, 0.9, 1.0);
+const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 const glm::vec4 eye_color(1.0, 0.0, 0.0, 1.0);
 
 void initShadersGL(void)

@@ -5,7 +5,7 @@ namespace View{
 	glm::mat4 mat_view = id;
 	glm::vec3 eye, lookat, up;
 	GLfloat l,r,t,b,n,f;
-	GLfloat L=-684,R=684,T=384,B=-384;
+	GLfloat L=0,R=WINDOW_WIDTH,T=WINDOW_HEIGHT,B=0;
 
 	glm::vec3 getN(){
 		return glm::normalize(eye-lookat);
