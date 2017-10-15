@@ -52,6 +52,19 @@ public:
 	void fromPoint(glm::vec3 point, glm::vec4 color);
 };
 
+class ClippableModel: public Model{
+
+public:
+	vector<struct Part*> clippedParts;
+	ClippableModel(){}
+	ClippableModel(GLuint vPosition, GLuint vColor);
+	GLuint isClipped;
+	GLuint calculatedClipped;
+	void clip();
+	void render();
+
+}
+
 
 extern LineArray viewFrustum, viewAxes;
 

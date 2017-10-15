@@ -158,5 +158,31 @@ void PointArray::fromPoint(glm::vec3 point, glm::vec4 color){
 	glPointSize(pointSize);
 }
 
+LineArray::LineArray(GLuint vPosition, GLuint vColor){
+	glGenVertexArrays (1, &vao);
+	glBindVertexArray (vao);
+	glEnableVertexAttribArray(vPosition);
+	glEnableVertexAttribArray(vColor);
+	
+	draw_mode = GL_LINES;
+	attrib_pos = vPosition;
+	attrib_col = vColor;
+}
 
 LineArray viewFrustum, viewAxes;
+
+
+
+ClippableModel::ClippableModel(GLuint vPosition, GLuint vColor){
+	glGenVertexArrays (1, &vao);
+	glBindVertexArray (vao);
+	glEnableVertexAttribArray(vPosition);
+	glEnableVertexAttribArray(vColor);
+	
+	draw_mode = GL_TRIANGLES;
+	attrib_pos = vPosition;
+	attrib_col = vColor;
+
+	isClipped = 0;
+	calculatedClipped = 0;
+}
