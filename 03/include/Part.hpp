@@ -16,6 +16,8 @@ public:
   Part(GLuint vPosition, GLuint vColor);
   void draw(glm::mat4);
   void addJoint(Joint* joint);
+  void fromFile(char *filename);
+
 };
 
 #endif
