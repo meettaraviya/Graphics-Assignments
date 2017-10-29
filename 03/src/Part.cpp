@@ -15,3 +15,7 @@ void Part::draw(glm::mat4 Parent_Transformation){
     
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }
+
+void Part::addJoint(Joint* joint){
+	joints.push_back(joint);
+}

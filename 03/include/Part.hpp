@@ -5,18 +5,17 @@
 #include "Joint.hpp"
 
 class Part{
-
-public:
   vector<glm::vec4> vertices;
   vector<glm::vec4> colors;
   vector<class Joint*> joints;
   GLuint vbo;
 
+public:
   GLuint attrib_col, attrib_pos;
   Part(){}
   Part(GLuint vPosition, GLuint vColor);
   void draw(glm::mat4);
-
+  void addJoint(Joint* joint);
 };
 
 #endif
