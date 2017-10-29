@@ -7,7 +7,7 @@ Part::Part(GLuint vPosition, GLuint vColor){
   glGenBuffers (1, &vbo);
 }
 
-void Part::fromFile(char* inFilename){
+void Part::fromFile(char* inFileName){
   FILE *inpFile = fopen(inFileName, "r");
   glm::vec4 pos(0.0,0.0,0.0,1.0), col(0.0,0.0,0.0,1.0);
   Part* part = new Part;
@@ -28,7 +28,7 @@ void Part::draw(glm::mat4 Parent_Transformation){
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
     for(int i=0;i<joints.size();i++){
-      joints[i].draw(Parent_Transformation);
+      joints[i]->draw(Parent_Transformation);
     }
 }
 
