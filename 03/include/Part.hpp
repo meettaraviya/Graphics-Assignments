@@ -2,12 +2,14 @@
 #define _PART_HPP_
 
 #include "Include.hpp"
-#include "main.hpp"
+#include "Joint.hpp"
+
 class Part{
+
 public:
   vector<glm::vec4> vertices;
   vector<glm::vec4> colors;
-  vector<Joint*> joints;
+  vector<class Joint*> joints;
   GLuint vbo;
 
   GLuint attrib_col, attrib_pos;

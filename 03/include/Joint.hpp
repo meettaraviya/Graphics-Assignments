@@ -2,18 +2,17 @@
 #define _JOINT_HPP_
 
 #include "Include.hpp"
-#include "Joint.hpp"
 #include "Part.hpp"
 
 class Joint
 {
 	glm::vec4 attach_point;
-	Part *child, *parent;
+	class Part *child, *parent;
 
 public:
 	Joint();
 	virtual glm::mat4 getT() = 0;
-	void draw();
+	void draw(glm::mat4);
 };
 
 class HingeJoint:Joint
@@ -34,7 +33,7 @@ class BallJoint:Joint
 	glm::mat4 rot_matrix;
 
 public:
-	HingeJoint();
+	BallJoint();
 	glm::mat4 getT();
 };
 

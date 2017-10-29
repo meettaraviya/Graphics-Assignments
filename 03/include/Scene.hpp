@@ -15,7 +15,7 @@ protected:
 	int draw_mode;
 
 public:
-	vector<struct Scene_Element*> parts;
+	vector<struct Scene_Element*> scene_elements;
 	Scene(){}
 	Scene(GLuint vPosition, GLuint vColor, int shape);
 	void fromFile(char* inFileName);

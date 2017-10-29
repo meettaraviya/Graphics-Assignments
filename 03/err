@@ -1,0 +1,9 @@
+In file included from src/Model.cpp:1:0:
+./include/Model.hpp:10:3: error: ‘Part’ does not name a type
+   Part* root;
+   ^~~~
+src/Model.cpp: In member function ‘void Model::draw()’:
+src/Model.cpp:17:3: error: ‘Part’ has not been declared
+   Part::draw();
+   ^~~~
+make: *** [assignment3] Error 1

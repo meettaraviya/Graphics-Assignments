@@ -1,4 +1,4 @@
-#include "Model.cpp"
+#include "Model.hpp"
 
 using namespace std;
 
@@ -12,7 +12,11 @@ Model::Model(GLuint vPosition, GLuint vColor){
   attrib_col = vColor;
 }
 
+void Model::fromFile(char* filename){
+	
+}
+
 void Model::draw(){
   glBindVertexArray (vao);
-  Part::draw();
+  root -> draw(id);
 }

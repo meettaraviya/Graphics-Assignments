@@ -3,41 +3,41 @@
 const glm::mat4 id(1.0);
 
 void Scene::scale(int index, GLfloat sx, GLfloat sy, GLfloat sz){
-	Part* part = parts[index];
+	Scene_Element* scene_element = scene_elements[index];
 	glm::mat4 mat_scale = glm::scale(id,{sx,sy,sz});
-	for(int i=0; i < part->vertices.size(); i++){
-		part->vertices[i] = mat_scale*part->vertices[i];
+	for(int i=0; i < scene_element->vertices.size(); i++){
+		scene_element->vertices[i] = mat_scale*scene_element->vertices[i];
 	}
 }
 
 void Scene::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
-	Part* part = parts[index];
+	Scene_Element* scene_element = scene_elements[index];
 	glm::mat4 mat_rotate = id;
 	mat_rotate = glm::rotate(id,glm::radians(rx), glm::vec3(1.0, 0.0, 0.0))*mat_rotate;
 	mat_rotate = glm::rotate(id,glm::radians(ry), glm::vec3(0.0, 1.0, 0.0))*mat_rotate;
 	mat_rotate = glm::rotate(id,glm::radians(rz), glm::vec3(0.0, 0.0, 1.0))*mat_rotate;
-	for(int i=0; i < part->vertices.size(); i++){
-		part->vertices[i] = mat_rotate*part->vertices[i];
+	for(int i=0; i < scene_element->vertices.size(); i++){
+		scene_element->vertices[i] = mat_rotate*scene_element->vertices[i];
 	}
 }
 
 void Scene::translate(int index, GLfloat tx, GLfloat ty, GLfloat tz){
-	Part* part = parts[index];
+	Scene_Element* scene_element = scene_elements[index];
 	glm::mat4 mat_translate = glm::translate(id,{tx,ty,tz});
-	for(int i=0; i < part->vertices.size(); i++){
-		part->vertices[i] = mat_translate*part->vertices[i];
+	for(int i=0; i < scene_element->vertices.size(); i++){
+		scene_element->vertices[i] = mat_translate*scene_element->vertices[i];
 	}
 }
 
 void Scene::centre(int index){
-	Part* part = parts[index];
+	Scene_Element* scene_element = scene_elements[index];
 	glm::vec4 vertices_sum({0.0,0.0,0.0,0.0});
-	for(int i=0; i < part->vertices.size(); i++){
-		vertices_sum += part->vertices[i];
+	for(int i=0; i < scene_element->vertices.size(); i++){
+		vertices_sum += scene_element->vertices[i];
 	}
-	glm::mat4 mat_centre = glm::translate(id, (glm::vec3) -vertices_sum/(GLfloat) part->vertices.size());;
-	for(int i=0; i < part->vertices.size(); i++){
-		part->vertices[i] = mat_centre*part->vertices[i];
+	glm::mat4 mat_centre = glm::translate(id, (glm::vec3) -vertices_sum/(GLfloat) scene_element->vertices.size());;
+	for(int i=0; i < scene_element->vertices.size(); i++){
+		scene_element->vertices[i] = mat_centre*scene_element->vertices[i];
 	}
 }
 namespace World{
