@@ -17,7 +17,7 @@ void Scene::fromFile(char* inFileName){
 
 	FILE *inpFile = fopen(inFileName, "r");
 	glm::vec4 pos(0.0,0.0,0.0,1.0), col(0.0,0.0,0.0,1.0);
-	Part* part = new Part;
+	Scene_Element* part = new Scene_Element;
 	
 	while(fscanf(inpFile,"%f %f %f %f %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2])>0){
 		part->vertices.push_back(pos);
@@ -29,7 +29,7 @@ void Scene::fromFile(char* inFileName){
 }
 
 void Scene::loadBuffers(int index){
-	Part* part = parts[index];
+	Scene_Element* part = parts[index];
 	glBindVertexArray (vao);
 	glGenBuffers (1, &part->vbo);
 	glBindBuffer (GL_ARRAY_BUFFER, part->vbo);

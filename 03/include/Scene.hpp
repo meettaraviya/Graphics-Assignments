@@ -5,7 +5,7 @@
 
 class Scene{
 protected:
-	struct Part{
+	struct Scene_Element{
 		vector<glm::vec4> vertices;
 		vector<glm::vec4> colors;
 		GLuint vbo;
@@ -15,7 +15,7 @@ protected:
 	int draw_mode;
 
 public:
-	vector<struct Part*> parts;
+	vector<struct Scene_Element*> parts;
 	Scene(){}
 	Scene(GLuint vPosition, GLuint vColor, int shape);
 	void fromFile(char* inFileName);
