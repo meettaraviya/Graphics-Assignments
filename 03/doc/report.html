@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<div class="w3-container">
+  <h1>Computer Graphics Assignment 2</h1>
+  <i>by Meet Taraviya(150050002) and Rajat Kapoor(150050037)</i>
+  <p>We loaded the models made in our previous assignmnet into a single scene, within a single VAO. We rotated, translated and scaled them appropriately to create an exciting scene of Captain America's shield smultaneously blocking a blow from Thor's hammer Mjolnir and a hit from Hawkeye's arrow.</p>
+  <h2>Simulating the Modelling Viewing Pipeline</h2>
+</div>
+
+<div class="w3-content w3-display-container">
+
+<div class="w3-display-container mySlides">
+  <img src="Default_view.png" style="width:100%">
+  <div class="w3-display-topright w3-large w3-container w3-padding-16 w3-black">
+    Default View (WCS)
+  </div>
+    <br>
+    <b>Legend:</b>
+    <br>
+    Each axis is coloured with 2 colors, with unit length strokes of each color. Axes remain fized in World Coordinate System.<br>
+    X-axis: Red & Cyan, with Red marking the portion between 0 and 1.<br>
+    Y-axis: Blue & Yellow, with Blue marking the portion between 0 and 1.<br>
+    Z-axis: Green & Magenta, with Green marking the portion between 0 and 1.<br>
+    Red square represents camera eye.
+
+    
+    <br>
+    <b>Controls:</b>
+    <br>
+    W,A,S,D to translate. Z to zoom out. X to zoom in. Up, Left, Right, Down, Page Up and Page Down to rotate.
+    <br>
+    0 to change to World Coordinate System (default)<br>
+    1 to change to View Coordinate System<br>
+    2 to change to Clipping Coordinate System<br>
+    3 to change to Normalized Device Coordinate System<br>
+    4 to change to Device Coordinate System
+</div>
+
+<div class="w3-display-container mySlides">
+  <img src="wcs_view.png" style="width:100%">
+  <div class="w3-display-topright w3-large w3-container w3-padding-16 w3-black">
+   World Coordinate System
+  </div>
+  View frustum is drawn using camera position, up direction, lookat point, lrtb margins and distances of near and far planes from eye. Models are loaded and transformed according to values in scene file.
+</div>
+
+<div class="w3-display-container mySlides">
+  <img src="ccs_view1.png" style="width:100%">
+  <div class="w3-display-topright w3-large w3-container w3-padding-16 w3-black">
+    Clipping Coordinate System
+  </div>
+  Eye is translated to origin and view frustum is aligned with coordinate axes. Done by left multiplying a translation and then a rotation matrix.
+</div>
+
+<div class="w3-display-container mySlides">
+  <img src="ccs_view2.png" style="width:100%">
+  <div class="w3-display-topright w3-large w3-container w3-padding-16 w3-black">
+    Normalized Device Coordinate System
+  </div>
+  View frustum is changed to a cube with xyz bounds in -1 to 1. Done by left multiplying a shearing, a scaling and a normalizing matrix in order.
+</div>
+
+<div class="w3-display-container mySlides">
+  <img src="dcs_view1.png" style="width:100%">
+  <div class="w3-display-topright w3-large w3-container w3-padding-16 w3-black">
+    Device Coordinate System
+  </div>
+  x and y from each point mapped to a pixel on screen, using window coordinates. z mapped between 0 and 1 for storing in z-buffer. Done by scaling and translation.
+</div>
+
+
+<button class="w3-button w3-display-left w3-black" onclick="plusDivs(-1)">&#10094;</button>
+<button class="w3-button w3-display-right w3-black" onclick="plusDivs(1)">&#10095;</button>
+
+</div>
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  if (n > x.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
+}
+</script>
+
+</body>
+</html>
