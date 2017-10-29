@@ -16,6 +16,7 @@ public:
   Part(){}
   Part(GLuint vPosition, GLuint vColor);
   void draw(glm::mat4);
+  void fromFile(char *filename);
 
 };
 
