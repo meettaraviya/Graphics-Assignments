@@ -38,9 +38,7 @@ void Scene::loadBuffers(int index){
 	glBufferSubData( GL_ARRAY_BUFFER, 0, part->vertices.size() * sizeof(glm::vec4), part->vertices.data() );
 	glBufferSubData( GL_ARRAY_BUFFER, part->vertices.size() * sizeof(glm::vec4), part->colors.size() * sizeof(glm::vec4), part->colors.data() );
 
-	// glEnableVertexAttribArray(attrib_pos);
 	glVertexAttribPointer( attrib_pos, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-	// glEnableVertexAttribArray(attrib_col);
 	glVertexAttribPointer( attrib_col, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(part->vertices.size()*sizeof(glm::vec4)) );
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
