@@ -22,6 +22,7 @@ void Scene::fromFile(char* inFileName){
 		scene_element->colors.push_back(col);
 	}
 
+	cout << scene_elements.size() << endl;
 	scene_elements.push_back(scene_element);
 	fclose(inpFile);
 }

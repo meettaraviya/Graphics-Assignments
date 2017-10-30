@@ -13,11 +13,11 @@ class Part{
   glm::vec3 attach_point;
 
 public:
-  Part();
+  Part(){}
   void draw(glm::mat4);
   void joinTo(Part* part, glm::vec3 attach_point);
   void fromFile(char *filename);
-
+  void loadBuffers();
 };
 
 class Model{

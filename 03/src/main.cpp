@@ -46,8 +46,8 @@ void renderScene(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
+  // scene->render();
   model->draw();
-  scene->render();
 
 }
 
@@ -73,12 +73,12 @@ void loadScene(char* sceneFileName){
 int main(int argc, char** argv)
 {
   window = csX75::getWindow();
-
   initShadersGL();
-  scene = new Scene(GL_TRIANGLES);
+
+  // scene = new Scene(GL_TRIANGLES);
   model = new Model();
 
-  loadScene( (char*) "scenes/myscene.scn");
+  // loadScene((char*) "scenes/myscene.scn");
   model->fromFile((char*) "characters/test.char");
 
   while (glfwWindowShouldClose(window) == 0)

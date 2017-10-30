@@ -1,4 +1,4 @@
-CC=g++ -std=c++11 -g
+CC=g++
 
 OPENGLLIB= -lGL
 GLEWLIB= -lGLEW
