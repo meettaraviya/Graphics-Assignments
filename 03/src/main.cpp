@@ -7,8 +7,7 @@ GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, uPartMatrix;
 glm::mat4 modelview_matrix;
 
 Scene scene;
-PointArray viewEye;
-// LineArray viewFrustum, viewAxes;
+// Model model;
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -47,13 +46,6 @@ void renderScene(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  modelview_matrix = RealView::mat_ortho_proj * 
-                      RealView::mat_lookat *
-                      World::mat_translation *
-                      World::mat_rotation;
-
-  glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
-
   scene.render();
 
 }
@@ -74,7 +66,7 @@ void loadScene(char* sceneFileName){
     scene.translate(i,translate[0],translate[1],translate[2]);
     scene.loadBuffers(i);
   }
-
+  fclose(sceneFile);
 }
 
 int main(int argc, char** argv)

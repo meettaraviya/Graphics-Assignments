@@ -4,7 +4,7 @@ minion_lefthand.raw
 minion_righthand.raw
 minion_leftleg.raw
 minion_rightleg.raw
-0 1     1 1 1   // point, axis, min_angle, max_angle
+0 1     1 1 1
 0 2     1 1 1  
 0 3     1 1 1
 0 4     1 1 1

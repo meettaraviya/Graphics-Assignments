@@ -1,21 +1,30 @@
-CC=g++
+CC=g++ -std=c++11 -g
 
 OPENGLLIB= -lGL
 GLEWLIB= -lGLEW
 GLFWLIB = -lglfw
-GLUTLIB = -lglut
-LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB) $(GLUTLIB)
+LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB)
 LDFLAGS=-L/usr/local/lib 
-CPPFLAGS=-I./include/ -g -std=c++11
+CPPFLAGS=-I/usr/local/include -I./include
 
 BIN=assignment3
-SRCS=src/*
-INCLUDES=include/*
+SRCS= $(wildcard */*.cpp) $(wildcard *.cpp)
+OBJS= $(patsubst %.cpp, %.o, $(SRCS))
 
 all: $(BIN)
 
-$(BIN): $(SRCS) $(INCLUDES)
-	$(CC) $(CPPFLAGS) $(SRCS) -o $(BIN) $(LDFLAGS) $(LIBS)
+%.o : %.cpp %.hpp
+	$(CC) -c $(CPPFLAGS) $< -o $@ $(LDFLAGS) $(LIBS)
+
+$(BIN): $(OBJS)
+	$(CC) $(CPPFLAGS) $(OBJS) -o $(BIN) $(LDFLAGS) $(LIBS)
+
+# $(OBJS): $(SRCS) $(INCS)
+# 	$(CC) $(CPPFLAGS) -c $(SRCS) -o $(OBJS) $(LDFLAGS) $(LIBS)
+
+report:  
+	doxygen config_file
 
 clean:
-	rm -f *~ *.o $(BIN)
+	rm -f $(OBJS) $(BIN)
+	rm -rf html/

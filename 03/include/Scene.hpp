@@ -1,5 +1,5 @@
-#ifndef _MODEL_HPP_
-#define _MODEL_HPP_
+#ifndef _SCENE_HPP_
+#define _SCENE_HPP_
 
 #include "Include.hpp"
 
