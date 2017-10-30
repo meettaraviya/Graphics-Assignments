@@ -2,15 +2,13 @@
 
 using namespace std;
 
-Scene::Scene(GLuint vPosition, GLuint vColor, int shape){
+Scene::Scene(int shape){
 	glGenVertexArrays (1, &vao);
 	glBindVertexArray (vao);
 	glEnableVertexAttribArray(vPosition);
 	glEnableVertexAttribArray(vColor);
 	
 	draw_mode = shape;
-	attrib_pos = vPosition;
-	attrib_col = vColor;
 }
 
 void Scene::fromFile(char* inFileName){
@@ -38,8 +36,8 @@ void Scene::loadBuffers(int index){
 	glBufferSubData( GL_ARRAY_BUFFER, 0, scene_element->vertices.size() * sizeof(glm::vec4), scene_element->vertices.data() );
 	glBufferSubData( GL_ARRAY_BUFFER, scene_element->vertices.size() * sizeof(glm::vec4), scene_element->colors.size() * sizeof(glm::vec4), scene_element->colors.data() );
 
-	glVertexAttribPointer( attrib_pos, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-	glVertexAttribPointer( attrib_col, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(scene_element->vertices.size()*sizeof(glm::vec4)) );
+	glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+	glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(scene_element->vertices.size()*sizeof(glm::vec4)) );
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -54,8 +52,8 @@ void Scene::render(){
 
 		glBindBuffer (GL_ARRAY_BUFFER, scene_elements[i]->vbo);
 
-		glVertexAttribPointer( attrib_pos, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-		glVertexAttribPointer( attrib_col, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(scene_elements[i]->vertices.size()*sizeof(glm::vec4)) );
+		glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+		glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(scene_elements[i]->vertices.size()*sizeof(glm::vec4)) );
 		
 		glDrawArrays(draw_mode, 0, scene_elements[i]->vertices.size());
 	}

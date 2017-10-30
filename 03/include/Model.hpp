@@ -13,9 +13,7 @@ class Part{
   glm::vec3 attach_point;
 
 public:
-  GLuint attrib_col, attrib_pos;
-  Part(){}
-  Part(GLuint vPosition, GLuint vColor);
+  Part();
   void draw(glm::mat4);
   void joinTo(Part* part, glm::vec3 attach_point);
   void fromFile(char *filename);
@@ -23,12 +21,11 @@ public:
 };
 
 class Model{
-  GLuint vao, attrib_col, attrib_pos;
+  GLuint vao;
 
 public:
   Part* root;
-  Model(){}
-  Model(GLuint vPosition, GLuint vColor);
+  Model();
   void draw();
   void fromFile(char* filename);
 };

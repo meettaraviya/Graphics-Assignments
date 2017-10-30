@@ -6,8 +6,8 @@ GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, uPartMatrix;
 
 glm::mat4 modelview_matrix;
 
-Scene scene;
-// Model model;
+Scene* scene;
+Model* model;
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -46,7 +46,8 @@ void renderScene(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  scene.render();
+  model->draw();
+  scene->render();
 
 }
 
@@ -60,11 +61,11 @@ void loadScene(char* sceneFileName){
     fscanf(sceneFile,"%f %f %f",&scale[0],&scale[1],&scale[2]);
     fscanf(sceneFile,"%f %f %f",&rot[0],&rot[1],&rot[2]);
     fscanf(sceneFile,"%f %f %f",&translate[0],&translate[1],&translate[2]);
-    scene.fromFile(rawFileName);
-    scene.scale(i,scale[0],scale[1],scale[2]);
-    scene.rotate(i,rot[0],rot[1],rot[2]);
-    scene.translate(i,translate[0],translate[1],translate[2]);
-    scene.loadBuffers(i);
+    scene->fromFile(rawFileName);
+    scene->scale(i,scale[0],scale[1],scale[2]);
+    scene->rotate(i,rot[0],rot[1],rot[2]);
+    scene->translate(i,translate[0],translate[1],translate[2]);
+    scene->loadBuffers(i);
   }
   fclose(sceneFile);
 }
@@ -74,9 +75,11 @@ int main(int argc, char** argv)
   window = csX75::getWindow();
 
   initShadersGL();
-  scene = Scene(vPosition,vColor, GL_TRIANGLES);
+  scene = new Scene(GL_TRIANGLES);
+  model = new Model();
 
   loadScene( (char*) "scenes/myscene.scn");
+  model->fromFile((char*) "characters/test.char");
 
   while (glfwWindowShouldClose(window) == 0)
   { 

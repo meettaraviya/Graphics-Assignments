@@ -13,12 +13,10 @@
 
 extern GLFWwindow* window;
 
-extern GLuint shaderProgram, vPosition, vColor, uModelViewMatrix;
-
 extern glm::mat4 modelview_matrix;
 
-extern Scene scene;
-extern Model model;
+extern Scene* scene;
+extern Model* model;
 
 
 #endif

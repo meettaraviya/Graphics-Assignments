@@ -11,13 +11,13 @@ protected:
 		GLuint vbo;
 	};
 
-	GLuint vao, attrib_col, attrib_pos;
+	GLuint vao;
 	int draw_mode;
 
 public:
 	vector<struct Scene_Element*> scene_elements;
 	Scene(){}
-	Scene(GLuint vPosition, GLuint vColor, int shape);
+	Scene(int shape);
 	void fromFile(char* inFileName);
 	void loadBuffers(int index);
 	void render();
@@ -30,27 +30,5 @@ public:
 
 
 };
-
-class LineArray: public Scene{
-	static constexpr GLfloat lineWidth = 10.0;
-	static constexpr GLfloat lineLength = 1000.0;
-	static glm::vec4 axesColors[6];
-public:
-	glm::vec4 frustumCenter;
-	LineArray(){}
-	LineArray(GLuint vPosition, GLuint vColor);
-	void loadFrustum();
-	void loadAxes();
-};
-
-class PointArray: public Scene{
-	static constexpr GLfloat pointSize = 10.0;
-public:
-	PointArray(){}
-	PointArray(GLuint vPosition, GLuint vColor);
-	void fromPoint(glm::vec3 point, glm::vec4 color);
-};
-
-extern LineArray viewFrustum, viewAxes;
 
 #endif

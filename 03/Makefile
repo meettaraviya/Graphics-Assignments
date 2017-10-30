@@ -5,7 +5,7 @@ GLEWLIB= -lGLEW
 GLFWLIB = -lglfw
 LIBS=$(OPENGLLIB) $(GLEWLIB) $(GLFWLIB)
 LDFLAGS=-L/usr/local/lib 
-CPPFLAGS=-I/usr/local/include -I./include
+CPPFLAGS=-I/usr/local/include -I./include -g
 
 BIN=assignment3
 SRCS= $(wildcard */*.cpp) $(wildcard *.cpp)
