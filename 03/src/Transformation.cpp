@@ -2,7 +2,7 @@
 
 const glm::mat4 id(1.0);
 
-void Scene::scale(int index, GLfloat sx, GLfloat sy, GLfloat sz){
+void Model::scale(int index, GLfloat sx, GLfloat sy, GLfloat sz){
 	Part* part = parts[index];
 	glm::mat4 mat_scale = glm::scale(id,{sx,sy,sz});
 	for(int i=0; i < part->vertices.size(); i++){
@@ -10,7 +10,7 @@ void Scene::scale(int index, GLfloat sx, GLfloat sy, GLfloat sz){
 	}
 }
 
-void Scene::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
+void Model::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
 	Part* part = parts[index];
 	glm::mat4 mat_rotate = id;
 	mat_rotate = glm::rotate(id,glm::radians(rx), glm::vec3(1.0, 0.0, 0.0))*mat_rotate;
@@ -21,7 +21,7 @@ void Scene::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
 	}
 }
 
-void Scene::translate(int index, GLfloat tx, GLfloat ty, GLfloat tz){
+void Model::translate(int index, GLfloat tx, GLfloat ty, GLfloat tz){
 	Part* part = parts[index];
 	glm::mat4 mat_translate = glm::translate(id,{tx,ty,tz});
 	for(int i=0; i < part->vertices.size(); i++){
@@ -29,7 +29,7 @@ void Scene::translate(int index, GLfloat tx, GLfloat ty, GLfloat tz){
 	}
 }
 
-void Scene::centre(int index){
+void Model::centre(int index){
 	Part* part = parts[index];
 	glm::vec4 vertices_sum({0.0,0.0,0.0,0.0});
 	for(int i=0; i < part->vertices.size(); i++){
