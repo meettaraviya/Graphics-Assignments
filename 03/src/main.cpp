@@ -2,7 +2,7 @@
 
 GLFWwindow* window;
 
-GLuint shaderProgram, vPosition, vColor, uModelViewMatrix;
+GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix;
 
 glm::mat4 modelview_matrix;
 
@@ -25,6 +25,7 @@ void initShadersGL(void)
 
   vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  vUV = glGetAttribLocation( shaderProgram, "uv" );
 
 }
 
@@ -100,8 +101,8 @@ int main(int argc, char** argv)
   window = csX75::getWindow();
 
   initShadersGL();
-  model = Model(vPosition,vColor, GL_TRIANGLES);
-  character = Character(vPosition,vColor, GL_TRIANGLES);
+  model = Model(GL_TRIANGLES);
+  character = Character(GL_TRIANGLES);
 
   loadScene( (char*) "scenes/myscene.scn");
   loadCharacter( (char*) "characters/robot.char");

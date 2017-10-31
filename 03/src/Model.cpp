@@ -2,37 +2,39 @@
 
 using namespace std;
 
-Model::Model(GLuint vPosition, GLuint vColor, int shape){
+Model::Model(int shape){
 	glGenVertexArrays (1, &vao);
 	glBindVertexArray (vao);
 	glEnableVertexAttribArray(vPosition);
 	glEnableVertexAttribArray(vColor);
+	glEnableVertexAttribArray(vUV);
 	
 	draw_mode = shape;
-	attrib_pos = vPosition;
-	attrib_col = vColor;
 }
 
-Character::Character(GLuint vPosition, GLuint vColor, int shape){
+Character::Character(int shape){
 	glGenVertexArrays (1, &vao);
 	glBindVertexArray (vao);
 	glEnableVertexAttribArray(vPosition);
 	glEnableVertexAttribArray(vColor);
+	glEnableVertexAttribArray(vUV);
 	
 	draw_mode = shape;
-	attrib_pos = vPosition;
-	attrib_col = vColor;
 }
 
 void Model::fromFile(char* inFileName){
 
 	FILE *inpFile = fopen(inFileName, "r");
 	glm::vec4 pos(0.0,0.0,0.0,1.0), col(0.0,0.0,0.0,1.0);
+	glm::vec2 uvs;
+	int textured;
 	Part* part = new Part;
 	
-	while(fscanf(inpFile,"%f %f %f %f %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2])>0){
+	while(fscanf(inpFile,"%f %f %f %f %f %f %d %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2], &textured, &uvs[0], &uvs[1])>0){
 		part->vertices.push_back(pos);
 		part->colors.push_back(col);
+		part->textured.push_back(textured);
+		part->uvs.push_back(uvs);
 	}
 
 	parts.push_back(part);
@@ -48,11 +50,11 @@ void Model::loadBuffers(int index){
 	glBufferData (GL_ARRAY_BUFFER, (part->vertices.size() + part->colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
 	glBufferSubData( GL_ARRAY_BUFFER, 0, part->vertices.size() * sizeof(glm::vec4), part->vertices.data() );
 	glBufferSubData( GL_ARRAY_BUFFER, part->vertices.size() * sizeof(glm::vec4), part->colors.size() * sizeof(glm::vec4), part->colors.data() );
+	glBufferSubData( GL_ARRAY_BUFFER, part->vertices.size() * sizeof(glm::vec4) + part->colors.size() * sizeof(glm::vec4), part->uvs.size() * sizeof(glm::vec2), part->uvs.data() );
 
-	// glEnableVertexAttribArray(attrib_pos);
-	glVertexAttribPointer( attrib_pos, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-	// glEnableVertexAttribArray(attrib_col);
-	glVertexAttribPointer( attrib_col, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(part->vertices.size()*sizeof(glm::vec4)) );
+	glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+	glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(part->vertices.size()*sizeof(glm::vec4)) );
+	glVertexAttribPointer( vUV, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(part->vertices.size()*sizeof(glm::vec4)*2) );
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -67,8 +69,9 @@ void Model::render(){
 
 		glBindBuffer (GL_ARRAY_BUFFER, parts[i]->vbo);
 
-		glVertexAttribPointer( attrib_pos, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-		glVertexAttribPointer( attrib_col, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)) );
+		glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+		glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)) );
+		glVertexAttribPointer( vUV, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)*2) );
 		
 		glDrawArrays(draw_mode, 0, parts[i]->vertices.size());
 	}
@@ -113,8 +116,9 @@ void Character::renderOne(int i, glm::mat4 parent_transform){
 	
 	glBindBuffer (GL_ARRAY_BUFFER, parts[i]->vbo);
 
-	glVertexAttribPointer( attrib_pos, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-	glVertexAttribPointer( attrib_col, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)) );
+	glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+	glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)) );
+	glVertexAttribPointer( vUV, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)*2) );
 	
 	glDrawArrays(draw_mode, 0, parts[i]->vertices.size());
 
@@ -140,20 +144,82 @@ void Character::addJoint(int i, int j, glm::vec3 attach_point){
 	attach_points[j] = glm::vec4(attach_point,0);
 }
 
+GLuint loadTexture( const char * filename, int width, int height )
+{
+    GLuint texture;
+    unsigned char header[54];// 54 Byte header of BMP
+    int pos;
+    unsigned int w,h;
+    unsigned int size; //w*h*3
+    unsigned char * data; // Data in RGB FORMAT
+    FILE * file;
+    
+    file = fopen( filename, "rb" );
+    if ( file == NULL ) return 0;  // if file is empty 
+    if (fread(header,1,54,file)!=54)
+      {
+	printf("Incorrect BMP file\n");
+	return 0;
+      }
+
+    // Read  MetaData
+    pos = *(int*)&(header[0x0A]);
+    size = *(int*)&(header[0x22]);
+    w = *(int*)&(header[0x12]);
+    h = *(int*)&(header[0x16]);
+
+    //Just in case metadata is missing
+    if(size == 0) 
+      size = w*h*3;
+    if(pos == 0)
+      pos = 54;
+
+    data = new unsigned char [size];
+
+    fread( data, size, 1, file ); // read the file
+    fclose( file );
+    //////////////////////////
+
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+   
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    
+    free( data );
+    return texture;// return the texture id
+}
+
+
 void Character::fromFile(char* inFileName){
 
 	FILE *inpFile = fopen(inFileName, "r");
 	glm::vec4 pos(0.0,0.0,0.0,1.0), col(0.0,0.0,0.0,1.0);
+	glm::vec2 uvs;
+	int textured;
 	Part* part = new Part;
 	
-	while(fscanf(inpFile,"%f %f %f %f %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2])>0){
+	while(fscanf(inpFile,"%f %f %f %f %f %f %d %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2], &textured, &uvs[0], &uvs[1])>0){
 		part->vertices.push_back(pos);
 		part->colors.push_back(col);
+		part->textured.push_back(textured);
+		part->uvs.push_back(uvs);
 	}
 
+	char textureFile[100];
+	int width, height;
+	fscanf(inpFile, "%s %d %d" , textureFile, &width, &height);
+
+	GLuint texture = loadTexture(textureFile, width, height);
+
+
 	parts.push_back(part);
-	attach_points.push_back(glm::vec4(0,0,0,0));
-	mats_relative_rot.push_back(id);
-	tree.push_back(vector<int>());
 	fclose(inpFile);
+
+
 }

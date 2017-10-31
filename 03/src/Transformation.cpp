@@ -67,6 +67,7 @@ namespace World{
 	  GLFW_KEY_X,
 	  GLFW_KEY_Z,
 	};
+	
 	void rotate(){
 		for(int i=0; i<6; i++){
 		    if(glfwGetKey(window, rotation_keys[i])==GLFW_PRESS){

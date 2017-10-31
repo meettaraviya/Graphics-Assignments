@@ -10,16 +10,18 @@ protected:
 	struct Part{
 		vector<glm::vec4> vertices;
 		vector<glm::vec4> colors;
+		vector<bool> textured;
+		vector<glm::vec2> uvs;
 		GLuint vbo;
 	};
 
-	GLuint vao, attrib_col, attrib_pos;
+	GLuint vao;
 	int draw_mode;
 
 public:
 	vector<struct Part*> parts;
 	Model(){}
-	Model(GLuint vPosition, GLuint vColor, int shape);
+	Model(int shape);
 	void fromFile(char* inFileName);
 	void loadBuffers(int index);
 	void render();
@@ -50,7 +52,7 @@ class Character: public Model{
 	};
 public:
 	Character(){}
-	Character(GLuint vPosition, GLuint vColor, int shape);
+	Character(int shape);
 	void render();
 	void update();
 	void fromFile(char* inFileName);
