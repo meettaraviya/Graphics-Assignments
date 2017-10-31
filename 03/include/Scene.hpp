@@ -22,7 +22,6 @@ public:
 	void loadBuffers(int index);
 	void render();
 
-	// defined in Transformation.cpp
 	void scale(int index, GLfloat sx, GLfloat sy, GLfloat sz);
 	void rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz);
 	void translate(int index, GLfloat tx, GLfloat ty, GLfloat tz);

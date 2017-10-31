@@ -25,7 +25,7 @@ class Model{
 
 public:
   Part* root;
-  Model();
+  // Model();
   void draw();
   void fromFile(char* filename);
 };

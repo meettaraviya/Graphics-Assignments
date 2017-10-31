@@ -2,14 +2,12 @@
 
 using namespace std;
 
-Model::Model(){
+void Model::fromFile(char* filename){
   glGenVertexArrays (1, &vao);
   glBindVertexArray (vao);
   glEnableVertexAttribArray(vPosition);
   glEnableVertexAttribArray(vColor);
-}
 
-void Model::fromFile(char* filename){
 	FILE *inpFile = fopen(filename, "r");
   glm::vec3 contact_point;
   int no_of_parts;
@@ -45,11 +43,11 @@ void Part::loadBuffers(){
   glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vertices.size()*sizeof(glm::vec4)) );
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
 }
 
 void Model::draw(){
   glBindVertexArray (vao);
+  // cout << "vao = " << vao << endl;
   root -> draw(id);
 }
 
@@ -65,10 +63,14 @@ void Part::fromFile(char* inFileName){
 }
 
 void Part::draw(glm::mat4 mat_parent_transform){
+  glBindVertexArray(2);
   glm::mat4 mat_transform = glm::translate(id, attach_point) * mat_rotation * glm::translate(id, -attach_point)*mat_parent_transform;
-  glUniformMatrix4fv(uPartMatrix, 1, GL_FALSE, glm::value_ptr(mat_transform));
+  // glUniformMatrix4fv(uPartMatrix, 1, GL_FALSE, glm::value_ptr(mat_transform));
+  glUniformMatrix4fv(uPartMatrix, 1, GL_FALSE, glm::value_ptr(id));
 
   glBindBuffer (GL_ARRAY_BUFFER,vbo);
+  // cout << vbo << endl;
+  // cout << vertices.size() << endl;
 
   glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
   glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(vertices.size()*sizeof(glm::vec4)) );

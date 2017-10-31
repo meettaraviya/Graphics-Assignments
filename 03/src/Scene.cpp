@@ -22,7 +22,7 @@ void Scene::fromFile(char* inFileName){
 		scene_element->colors.push_back(col);
 	}
 
-	cout << scene_elements.size() << endl;
+	// cout << scene_elements.size() << endl;
 	scene_elements.push_back(scene_element);
 	fclose(inpFile);
 }
@@ -41,7 +41,7 @@ void Scene::loadBuffers(int index){
 	glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(scene_element->vertices.size()*sizeof(glm::vec4)) );
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	// glBindVertexArray(0);
 
 }
 
@@ -49,9 +49,13 @@ void Scene::render(){
 
 	glBindVertexArray (vao);
 
+  	// cout << "vao = " << vao << endl;
+
+
 	for(int i=0; i<scene_elements.size(); i++){
 
 		glBindBuffer (GL_ARRAY_BUFFER, scene_elements[i]->vbo);
+		// cout << scene_elements[i]->vbo << endl;
 
 		glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
 		glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(scene_elements[i]->vertices.size()*sizeof(glm::vec4)) );
