@@ -104,7 +104,7 @@ int main(int argc, char** argv)
   character = Character(vPosition,vColor, GL_TRIANGLES);
 
   loadScene( (char*) "scenes/myscene.scn");
-  loadCharacter( (char*) "characters/1.char");
+  loadCharacter( (char*) "characters/robot.char");
 
   while (glfwWindowShouldClose(window) == 0)
   { 

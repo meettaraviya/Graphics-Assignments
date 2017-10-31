@@ -77,7 +77,23 @@ void Model::render(){
 
 void Character::renderOne(int i, glm::mat4 parent_transform){
 
-	glm::vec3 vec_translate( parent_transform * attach_points[i] ); 
+	glm::vec3 vec_translate( parent_transform * attach_points[i] );
+
+	glm::vec3 new_axes[6];
+
+	for(int i=0; i<6; i++)
+		new_axes[i] = glm::vec3(parent_transform*glm::vec4(World::axes[i],1.0));
+
+	for(int i=0; i<parts.size(); i++){
+		if(glfwGetKey(window, GLFW_KEY_0+i)==GLFW_PRESS){
+			for(int j=0; j<6; j++){
+		      if(glfwGetKey(window, relative_rot_keys[j])==GLFW_PRESS){
+		      	// cout << i << j << endl;
+		      	mats_relative_rot[i] = glm::rotate(id, relative_rot_speed, new_axes[j])*mats_relative_rot[i]; 	
+		      }
+			}
+		}
+	}
 
 	glm::mat4 my_transform = 
 		glm::translate(id, vec_translate) *
@@ -116,16 +132,7 @@ void Character::render(){
 }
 
 void Character::update(){
-	for(int i=0; i<parts.size(); i++){
-		if(glfwGetKey(window, GLFW_KEY_0+i)==GLFW_PRESS){
-			for(int j=0; j<6; j++){
-		      if(glfwGetKey(window, relative_rot_keys[j])==GLFW_PRESS){
-		      	// cout << i << j << endl;
-		      	mats_relative_rot[i] = glm::rotate(id, relative_rot_speed, World::axes[j])*mats_relative_rot[i]; 	
-		      }
-			}
-		}
-	}
+
 }
 
 void Character::addJoint(int i, int j, glm::vec3 attach_point){

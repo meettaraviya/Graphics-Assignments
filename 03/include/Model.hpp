@@ -39,7 +39,7 @@ class Character: public Model{
 	vector<vector<int>> tree;
 	void renderOne(int i, glm::mat4 parent_transform);
 
-	GLfloat relative_rot_speed = 15.7e-2;
+	GLfloat relative_rot_speed = 1.57e-2;
 	GLuint relative_rot_keys[6] = {
 	  GLFW_KEY_R,
 	  GLFW_KEY_F,
