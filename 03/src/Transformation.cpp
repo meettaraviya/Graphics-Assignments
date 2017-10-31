@@ -2,16 +2,26 @@
 
 const glm::mat4 id(1.0);
 
+<<<<<<< HEAD
 void Scene::scale(int index, GLfloat sx, GLfloat sy, GLfloat sz){
 	Scene_Element* scene_element = scene_elements[index];
+=======
+void Model::scale(int index, GLfloat sx, GLfloat sy, GLfloat sz){
+	Part* part = parts[index];
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
 	glm::mat4 mat_scale = glm::scale(id,{sx,sy,sz});
 	for(int i=0; i < scene_element->vertices.size(); i++){
 		scene_element->vertices[i] = mat_scale*scene_element->vertices[i];
 	}
 }
 
+<<<<<<< HEAD
 void Scene::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
 	Scene_Element* scene_element = scene_elements[index];
+=======
+void Model::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
+	Part* part = parts[index];
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
 	glm::mat4 mat_rotate = id;
 	mat_rotate = glm::rotate(id,glm::radians(rx), glm::vec3(1.0, 0.0, 0.0))*mat_rotate;
 	mat_rotate = glm::rotate(id,glm::radians(ry), glm::vec3(0.0, 1.0, 0.0))*mat_rotate;
@@ -21,16 +31,26 @@ void Scene::rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz){
 	}
 }
 
+<<<<<<< HEAD
 void Scene::translate(int index, GLfloat tx, GLfloat ty, GLfloat tz){
 	Scene_Element* scene_element = scene_elements[index];
+=======
+void Model::translate(int index, GLfloat tx, GLfloat ty, GLfloat tz){
+	Part* part = parts[index];
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
 	glm::mat4 mat_translate = glm::translate(id,{tx,ty,tz});
 	for(int i=0; i < scene_element->vertices.size(); i++){
 		scene_element->vertices[i] = mat_translate*scene_element->vertices[i];
 	}
 }
 
+<<<<<<< HEAD
 void Scene::centre(int index){
 	Scene_Element* scene_element = scene_elements[index];
+=======
+void Model::centre(int index){
+	Part* part = parts[index];
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
 	glm::vec4 vertices_sum({0.0,0.0,0.0,0.0});
 	for(int i=0; i < scene_element->vertices.size(); i++){
 		vertices_sum += scene_element->vertices[i];

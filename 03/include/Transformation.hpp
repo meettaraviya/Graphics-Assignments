@@ -2,7 +2,7 @@
 #define _TRANSFORMATION_HPP_
 
 #include "Include.hpp"
-#include "Scene.hpp"
+#include "Model.hpp"
 
 extern GLFWwindow* window;
 
