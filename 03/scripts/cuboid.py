@@ -27,7 +27,7 @@ if len(sys.argv)>=10:
 		[5,6,8],
 	]
 	for t in tri_i:
-		print(*vertices[t[0]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
-		print(*vertices[t[1]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
-		print(*vertices[t[2]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
+		print(*vertices[t[0]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]),"0","0.0","0.0")
+		print(*vertices[t[1]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]),"0","0.0","0.0")
+		print(*vertices[t[2]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]),"0","0.0","0.0")
 		print()
