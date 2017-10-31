@@ -30,4 +30,4 @@ if len(sys.argv)>=10:
 		print(*vertices[t[0]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
 		print(*vertices[t[1]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
 		print(*vertices[t[2]-1], float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9]))
-		print()
+		print('')
