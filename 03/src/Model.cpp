@@ -47,7 +47,7 @@ void Model::loadBuffers(int index){
 	glGenBuffers (1, &part->vbo);
 	glBindBuffer (GL_ARRAY_BUFFER, part->vbo);
 
-	glBufferData (GL_ARRAY_BUFFER, (part->vertices.size() + part->colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
+	glBufferData (GL_ARRAY_BUFFER, part->uvs.size()*sizeof(glm::vec2) + (part->vertices.size() + part->colors.size()) * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
 	glBufferSubData( GL_ARRAY_BUFFER, 0, part->vertices.size() * sizeof(glm::vec4), part->vertices.data() );
 	glBufferSubData( GL_ARRAY_BUFFER, part->vertices.size() * sizeof(glm::vec4), part->colors.size() * sizeof(glm::vec4), part->colors.data() );
 	glBufferSubData( GL_ARRAY_BUFFER, part->vertices.size() * sizeof(glm::vec4) + part->colors.size() * sizeof(glm::vec4), part->uvs.size() * sizeof(glm::vec2), part->uvs.data() );
@@ -211,12 +211,9 @@ void Character::fromFile(char* inFileName){
 		part->uvs.push_back(uvs);
 	}
 
-	char textureFile[100];
-	int width, height;
-	fscanf(inpFile, "%s %d %d" , textureFile, &width, &height);
-
-	GLuint texture = loadTexture(textureFile, width, height);
-
+	mats_relative_rot.push_back(id);
+	attach_points.push_back(glm::vec4(0,0,0,0)); 
+	tree.push_back(vector<int>());
 
 	parts.push_back(part);
 	fclose(inpFile);
