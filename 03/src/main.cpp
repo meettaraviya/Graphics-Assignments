@@ -163,7 +163,7 @@ int main(int argc, char** argv)
   character = Character(GL_TRIANGLES);
 
   loadScene( (char*) "scenes/myscene.scn");
-  loadCharacter( (char*) "characters/robot.char");
+  loadCharacter( (char*) "characters/spongebob.char");
 
   while (glfwWindowShouldClose(window) == 0)
   { 
