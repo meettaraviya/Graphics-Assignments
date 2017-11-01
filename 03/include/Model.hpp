@@ -10,9 +10,12 @@ protected:
 	struct Part{
 		vector<glm::vec4> vertices;
 		vector<glm::vec4> colors;
-		vector<bool> textured;
+		int num_textured;
+		GLuint texture;
+		unsigned int texture_width, texture_height;
 		vector<glm::vec2> uvs;
 		GLuint vbo;
+		unsigned char* texture_data = NULL;
 	};
 
 	GLuint vao;
@@ -25,6 +28,7 @@ public:
 	void fromFile(char* inFileName);
 	void loadBuffers(int index);
 	void render();
+
 
 	// defined in Transformation.cpp
 	void scale(int index, GLfloat sx, GLfloat sy, GLfloat sz);

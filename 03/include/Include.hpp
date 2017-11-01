@@ -30,6 +30,6 @@
 using namespace std;
 
 extern const glm::mat4 id;
-extern GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix;
+extern GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
 
 #endif
