@@ -13,8 +13,6 @@ void main ()
   if(isTextured>0){
 	frag_color = texture( t_sampler, UV ).rgba;
   }else{
-  	vec4 c2 = color;
-  	c2[0]=isTextured;
-  	frag_color = c2;
+  	frag_color = color;
   }
 }

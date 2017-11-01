@@ -28,6 +28,8 @@ void initShadersGL(void)
   vUV = glGetAttribLocation( shaderProgram, "uv" );
   vIsTextured = glGetAttribLocation( shaderProgram, "isTextured" );
 
+  // cout << "vIsT" << vIsTextured << endl;
+
 }
 
 void render(GLFWwindow *window)
@@ -113,7 +115,8 @@ int main(int argc, char** argv)
   character = Character(GL_TRIANGLES);
 
   // loadScene( (char*) "scenes/myscene.scn");
-  loadCharacter( (char*) "characters/robot.char");
+  loadCharacter( (char*) "characters/spongebob.char");
+  // loadCharacter( (char*) "characters/robot.char");
 
   while (glfwWindowShouldClose(window) == 0)
   { 
