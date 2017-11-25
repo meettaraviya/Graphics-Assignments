@@ -37,6 +37,9 @@ namespace csX75
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
       exit(0);
     }
+    if(key == GLFW_KEY_C && action == GLFW_PRESS){
+      character.frame_capture();
+    }
   }
 
   GLFWwindow * getWindow(){

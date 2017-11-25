@@ -41,7 +41,7 @@ public:
 
 class Character: public Model{
 	vector<glm::mat4> mats_relative_rot;
-	vector<glm::vec4> attach_points; 
+	vector<glm::vec4> attach_points;
 	vector<vector<int>> tree;
 	void renderOne(int i, glm::mat4 parent_transform);
 
@@ -61,6 +61,9 @@ public:
 	void update();
 	void fromFile(char* inFileName);
 	void addJoint(int, int, glm::vec3);
+	void frame_capture();
+	void loadCharacter(char* charFileName);
+
 };
 
 #endif
