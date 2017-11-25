@@ -38,19 +38,25 @@ protected:
 	struct Part{
 		vector<glm::vec4> vertices;
 		vector<glm::vec4> colors;
+		int num_textured;
+		GLuint texture;
+		unsigned int texture_width, texture_height;
+		vector<glm::vec2> uvs;
 		GLuint vbo;
+		unsigned char* texture_data = NULL;
 	};
 
-	GLuint vao, attrib_col, attrib_pos;
+	GLuint vao;
 	int draw_mode;
 
 public:
 	vector<struct Part*> parts;
 	Model(){}
-	Model(GLuint vPosition, GLuint vColor, int shape);
+	Model(int shape);
 	void fromFile(char* inFileName);
 	void loadBuffers(int index);
 	void render();
+
 
 	// defined in Transformation.cpp
 	void scale(int index, GLfloat sx, GLfloat sy, GLfloat sz);
@@ -67,7 +73,7 @@ class Character: public Model{
 	vector<vector<int>> tree;
 	void renderOne(int i, glm::mat4 parent_transform);
 
-	GLfloat relative_rot_speed = 15.7e-2;
+	GLfloat relative_rot_speed = 1.57e-2;
 	GLuint relative_rot_keys[6] = {
 	  GLFW_KEY_R,
 	  GLFW_KEY_F,
@@ -78,12 +84,16 @@ class Character: public Model{
 	};
 public:
 	Character(){}
-	Character(GLuint vPosition, GLuint vColor, int shape);
+	Character(int shape);
 	void render();
 	void update();
 	void fromFile(char* inFileName);
 	void addJoint(int, int, glm::vec3);
+<<<<<<< HEAD
 >>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+>>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 };
 
 #endif

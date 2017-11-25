@@ -1,0 +1,16 @@
+We made a non-humanoid model similar to minecraft models using their basic dimensions and structures.We also used their texture mapping to create uv mapping for all the raw files basically adding a boolean bit to indicate whether the texture is enabled is enabled in that part or not i.e, if the bit is 0,no texture mapping is done, if 1 then mapping is done and specific values between 0 and 1 are written to it.
+
+Also the models made undergo the rotations on the keys presses:
+1. 0+(R-F),(T-G),(Y-H) 
+2. 1+(R-F),(T-G),(Y-H)
+3. 2+(R-F),(T-G),(Y-H)
+4. 3+(R-F),(T-G),(Y-H)
+5. 4+(R-F),(T-G),(Y-H)
+6. 5+(R-F),(T-G),(Y-H)
+
+The hierarchical model tree:
+
+         ---------torso--------------
+         |   |    |        |      |
+      head  left  right   left    right
+            leg    leg     hand    hand

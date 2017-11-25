@@ -33,7 +33,12 @@ extern const glm::mat4 id;
 <<<<<<< HEAD
 extern GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, uPartMatrix;
 =======
+<<<<<<< HEAD
 extern GLuint shaderProgram, vPosition, vColor, uModelViewMatrix;
 >>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+extern GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
+>>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
 #endif

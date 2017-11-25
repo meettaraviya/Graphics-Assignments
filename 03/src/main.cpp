@@ -2,17 +2,29 @@
 
 GLFWwindow* window;
 
+<<<<<<< HEAD
 GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, uPartMatrix;
 
 glm::mat4 modelview_matrix;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 Scene* scene, *scene2;
 Model* model;
 =======
+GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
+
+glm::mat4 modelview_matrix;
+
 Model model;
 Character character;
+<<<<<<< HEAD
 >>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+>>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -30,6 +42,10 @@ void initShadersGL(void)
 
   vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   vColor = glGetAttribLocation( shaderProgram, "vColor" );
+  vUV = glGetAttribLocation( shaderProgram, "uv" );
+  vIsTextured = glGetAttribLocation( shaderProgram, "isTextured" );
+
+  // cout << "vIsT" << vIsTextured << endl;
 
   uModelViewMatrix = glGetUniformLocation(shaderProgram, "uModelViewMatrix");
   uPartMatrix = glGetUniformLocation(shaderProgram, "uPartMatrix");
@@ -65,7 +81,11 @@ void render(GLFWwindow *window)
 
   // model.render();
   character.render();
+<<<<<<< HEAD
 >>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+>>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
 }
 
@@ -85,6 +105,9 @@ void loadScene(char* modelFileName){
     scene->rotate(i,rot[0],rot[1],rot[2]);
     scene->translate(i,translate[0],translate[1],translate[2]);
     scene->loadBuffers(i);
+  }
+  fclose(sceneFile);
+}
 =======
   int count;
   fscanf(modelFile, "%d", &count);
@@ -99,7 +122,7 @@ void loadScene(char* modelFileName){
     model.translate(i,translate[0],translate[1],translate[2]);
     model.loadBuffers(i);
   }
-
+  fclose(modelFile);
 }
 
 void loadCharacter(char* charFileName){
@@ -117,10 +140,19 @@ void loadCharacter(char* charFileName){
   for(int i=0; i<count-1; i++){
     fscanf( charFile, "%d %d %f %f %f", &l, &r, &pos.x, &pos.y, &pos.z);
     character.addJoint(l, r, pos);
+<<<<<<< HEAD
 >>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
   }
-  fclose(sceneFile);
-}
+
+  char textureFile[100];
+  // fscanf(charFile, "%s" , textureFile);
+
+  // GLuint texture = loadTexture(textureFile);
+
+  fclose(charFile);
+>>>>>>> NEW
 
 void loadScene2(char* sceneFileName){
   FILE *sceneFile = fopen(sceneFileName, "r");
@@ -154,12 +186,18 @@ int main(int argc, char** argv)
   loadScene2((char*) "scenes/myscene2.scn");
   model->fromFile((char*) "characters/test.char");
 =======
-  model = Model(vPosition,vColor, GL_TRIANGLES);
-  character = Character(vPosition,vColor, GL_TRIANGLES);
+  model = Model(GL_TRIANGLES);
+  character = Character(GL_TRIANGLES);
 
+<<<<<<< HEAD
   loadScene( (char*) "scenes/myscene.scn");
   loadCharacter( (char*) "characters/1.char");
 >>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+  loadCharacter( (char*) "characters/spongebob.char");
+  // loadCharacter( (char*) "characters/robot.char");
+>>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
   while (glfwWindowShouldClose(window) == 0)
   { 
