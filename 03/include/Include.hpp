@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stack>
 #include <algorithm>
 #include <string>
 #include <fstream>
@@ -27,7 +28,12 @@
 #define GRID_M 48
 
 using namespace std;
+
 extern const glm::mat4 id;
+<<<<<<< HEAD
 extern GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, uPartMatrix;
+=======
+extern GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
+>>>>>>> NEW
 
 #endif
