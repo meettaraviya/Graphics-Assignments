@@ -5,22 +5,22 @@ using namespace std;
 
 unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned int &h, GLuint &texture)
 {
-    unsigned char header[54];// 54 Byte header of BMP
+    unsigned char header[54];
     int pos;
-    // unsigned int w,h;
-    unsigned int size; //w*h*3
-    unsigned char * data; // Data in RGB FORMAT
+
+    unsigned int size;
+    unsigned char * data;
     FILE * file;
 
     file = fopen( filename, "rb" );
-    // if ( file == NULL ) return 0;  // if file is empty
-    if (fread(header,1,54,file)!=54)
-      {
-  printf("Incorrect BMP file\n");
-  return 0;
-      }
 
-    // Read  MetaData
+    if (fread(header,1,54,file)!=54)
+    {
+		printf("Incorrect BMP file\n");
+		return 0;
+    }
+
+
     pos = *(int*)&(header[0x0A]);
     size = *(int*)&(header[0x22]);
     w = *(int*)&(header[0x12]);
@@ -34,10 +34,8 @@ unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned in
 
     data = new unsigned char [size];
 
-    // cout << "fread" <<
-    fread( data, size, 1, file );// << endl; // read the file
+    fread( data, size, 1, file );
     fclose( file );
-    //////////////////////////
 
     glGenTextures( 1, &texture );
 
@@ -121,6 +119,9 @@ void Character::renderOne(int i, glm::mat4 par_transform, glm::mat4 parent_rotat
 			}
 		}
 	}
+	// for( int k=0; k<3; k++)
+	// 	cout << val_rot[i][k] << " ";
+	// cout << endl;
 
 	glm::mat4 my_rotate = id;
 	for(int j=0; j<3; j++)
@@ -193,10 +194,10 @@ void Character::fromFile(char* inFileName){
     part->uvs.push_back(uvs);
   }
 
-  cout << inFileName << endl;
-  for(int i=0; i<5; i++)
-    cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
-  cout << endl;
+  // cout << inFileName << endl;
+  // for(int i=0; i<5; i++)
+  //   cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
+  // cout << endl;
 
   val_rot.push_back(glm::vec3());
   attach_points.push_back(glm::vec4(0,0,0,0));
@@ -259,11 +260,61 @@ void Model::fromFile(char* inFileName){
 		part->uvs.push_back(uvs);
 	}
 
-	cout << inFileName << endl;
-	for(int i=0; i<5; i++)
-		cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
-	cout << endl;
+	// cout << inFileName << endl;
+	// for(int i=0; i<5; i++)
+	// 	cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
+	// cout << endl;
 
 	parts.push_back(part);
 	fclose(inpFile);
+}
+
+void Character::send_params(int &ix, vector<GLfloat> &params){
+	   //  for(int i=0; i<params.size(); i++){
+    //   cout << params[i] << " ";
+    // }
+    // cout << endl;
+	for(int i=0; i<val_rot.size(); i++){
+		params[ix] = val_rot[i][0];
+		params[ix+1] = val_rot[i][1];
+		params[ix+2] = val_rot[i][2];
+		ix+=3;
+	}
+	params[ix] = vec_rotate[0];
+	params[ix+1] = vec_rotate[1];
+	params[ix+2] = vec_rotate[2];
+	ix += 3;
+	params[ix] = vec_scale[0];
+	params[ix+1] = vec_scale[1];
+	params[ix+2] = vec_scale[2];
+	ix += 3;
+	params[ix] = vec_translate[0];
+	params[ix+1] = vec_translate[1];
+	params[ix+2] = vec_translate[2];
+	ix += 3;
+	   //  for(int i=0; i<params.size(); i++){
+    //   cout << params[i] << " ";
+    // }
+    // cout << endl;
+}
+
+void Character::get_params(int &ix, vector<GLfloat> &params){
+	for(int i=0; i<val_rot.size(); i++){
+		val_rot[i][0] = params[ix];
+		val_rot[i][1] = params[ix+1];
+		val_rot[i][2] = params[ix+2];
+		ix+=3;
+	}
+	vec_rotate[0] = params[ix];
+	vec_rotate[1] = params[ix+1];
+	vec_rotate[2] = params[ix+2];
+	ix += 3;
+	vec_scale[0] = params[ix];
+	vec_scale[1] = params[ix+1];
+	vec_scale[2] = params[ix+2];
+	ix += 3;
+	vec_translate[0] = params[ix];
+	vec_translate[1] = params[ix+1];
+	vec_translate[2] = params[ix+2];
+	ix += 3;
 }

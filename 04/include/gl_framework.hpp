@@ -7,7 +7,6 @@
 #include "Frame.hpp"
 
 extern class Character character;
-extern vector<class Frame> keyframe;
 
 namespace csX75
 {

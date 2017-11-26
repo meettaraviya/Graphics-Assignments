@@ -19,6 +19,8 @@
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
 
+#define TPF 1.0/6000
+
 // Define a helpful macro for handling offsets into buffer objects
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 #define WINDOW_WIDTH 768
@@ -27,9 +29,14 @@
 #define GRID_N 32
 #define GRID_M 48
 
+#define PLAYBACK 0
+#define RECORD 1
+
 using namespace std;
 
 extern const glm::mat4 id;
 extern GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
+
+extern int mode;
 
 #endif

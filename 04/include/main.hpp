@@ -9,6 +9,7 @@
 #include "Model.hpp"
 #include "Transformation.hpp"
 #include "RealView.hpp"
+#include "Frame.hpp"
 
 void frame_capture();
 
@@ -18,7 +19,7 @@ extern glm::mat4 modelview_matrix;
 
 extern Model model;
 
-extern class Character chararr[2];
+extern vector<Character> characters; 
 
 extern vector<int>numframe;
 #endif

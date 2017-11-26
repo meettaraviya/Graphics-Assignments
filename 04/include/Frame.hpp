@@ -6,11 +6,21 @@
 
 class Frame{
 public:
-  int nparams;
-  float* nframes;
+  static int param_count;
+  vector<GLfloat> params;
   Frame();
+  static void count_params();
   void frame_capture();
-  void interpolate_frame();
+  void frame_set();
+  // void interpolate_frame();
 };
+
+void write_keyframes();
+void load_keyframes();
+void interpolate_frames();
+
+extern vector<Frame> keyframes, allframes;
+extern vector<int> frame_gaps;
+
 
 #endif

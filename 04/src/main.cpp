@@ -9,7 +9,9 @@ glm::mat4 modelview_matrix;
 Model model;
 vector<Frame>keyframe;
 vector<int>numframe;
-Character chararr[2];
+vector<Character> characters(2); 
+
+int mode = RECORD;
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -56,8 +58,18 @@ void render(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  chararr[0].render();
-  chararr[1].render();
+
+  if(mode==PLAYBACK){
+    static int frame_num = 0;
+    static double prev_time;
+    while(glfwGetTime()<prev_time+TPF);
+    prev_time = glfwGetTime();
+    allframes[frame_num].frame_set();
+    frame_num = (frame_num+1)%(allframes.size());
+  }
+
+  characters[0].render();
+  // characters[1].render();
 }
 
 void loadScene(char* modelFileName){
@@ -86,16 +98,27 @@ int main(int argc, char** argv)
 
   initShadersGL();
   model = Model(GL_TRIANGLES);
-  chararr[0] = Character(GL_TRIANGLES);
-  chararr[1] = Character(GL_TRIANGLES);
+  characters[0] = Character(GL_TRIANGLES);
+  characters[1] = Character(GL_TRIANGLES);
 
-  chararr[0].loadCharacter( (char*) "characters/spongebob.char");
-  chararr[1].loadCharacter( (char*) "characters/robot.char");
+  characters[0].loadCharacter( (char*) "characters/spongebob.char");
+  characters[1].loadCharacter( (char*) "characters/robot.char");
+
+  Frame::count_params();
+
+  cout << "\n\t[0] Playback \n\t[1] Record\nEnter mode:  ";
+  cin >> mode;
+
+  if(mode==PLAYBACK){
+    load_keyframes();
+    interpolate_frames();
+  }
+
 
   while (glfwWindowShouldClose(window) == 0)
   {
-    chararr[0].update();
-    chararr[1].update();
+    characters[0].update();
+    characters[1].update();
     render(window);
     glfwSwapBuffers(window);
     glfwPollEvents();

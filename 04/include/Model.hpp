@@ -17,6 +17,7 @@ protected:
 		GLuint vbo;
 		unsigned char* texture_data = NULL;
 	};
+	glm::vec3 vec_translate, vec_scale, vec_rotate;
 
 	GLuint vao;
 	int draw_mode;
@@ -35,6 +36,7 @@ public:
 	void rotate(int index, GLfloat rx, GLfloat ry, GLfloat rz);
 	void translate(int index, GLfloat tx, GLfloat ty, GLfloat tz);
 	void centre(int index);
+	void send_params(int &ix, vector<GLfloat> &params);
 
 
 };
@@ -62,6 +64,8 @@ public:
 	void fromFile(char* inFileName);
 	void addJoint(int, int, glm::vec3);
 	void loadCharacter(char* charFileName);
+	void send_params(int &ix, vector<GLfloat> &params);
+	void get_params(int &ix, vector<GLfloat> &params);
 
 };
 

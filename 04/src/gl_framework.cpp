@@ -37,9 +37,22 @@ namespace csX75
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
       exit(0);
     }
-    if(key == GLFW_KEY_C && action == GLFW_PRESS){
-      keyframe.push_back(Frame());
-      keyframe[keyframe.size()-1].frame_capture();
+    if(key == GLFW_KEY_C && action == GLFW_PRESS && mode==RECORD){
+      keyframes.push_back(Frame());
+      keyframes[keyframes.size()-1].frame_capture();
+      // for(int i=0; i<Frame::param_count; i++){
+      //   cout << keyframes[keyframes.size()-1].params[i] << " ";
+      // }
+      // cout << endl;
+      cout << "Number of frames to next keyframe: ";
+      int gap;
+      cin >> gap;
+      if(gap<=0){
+        write_keyframes();
+        cout << "Keyframes written" << endl;
+        exit(0);
+      }
+      frame_gaps.push_back(gap);
     }
   }
 
