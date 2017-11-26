@@ -7,8 +7,9 @@ GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
 glm::mat4 modelview_matrix;
 
 Model model;
-Character character;
-Character character1;
+vector<Frame>keyframe;
+vector<int>numframe;
+Character chararr[2];
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -56,11 +57,10 @@ void render(GLFWwindow *window)
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
   // model.render();
-  character.render();
-  character1.render();
+  chararr[0].render();
+  chararr[1].render();
 
 }
-
 
 void loadScene(char* modelFileName){
   FILE *modelFile = fopen(modelFileName, "r");
@@ -82,22 +82,23 @@ void loadScene(char* modelFileName){
   fclose(modelFile);
 }
 
+
 int main(int argc, char** argv)
 {
   window = csX75::getWindow();
 
   initShadersGL();
   model = Model(GL_TRIANGLES);
-  character = Character(GL_TRIANGLES);
-  character1 = Character(GL_TRIANGLES);
+  chararr[0] = Character(GL_TRIANGLES);
+  chararr[1] = Character(GL_TRIANGLES);
 
-
-  character.loadCharacter( (char*) "characters/spongebob.char");
-  character1.loadCharacter( (char*) "characters/robot.char");
+  chararr[0].loadCharacter( (char*) "characters/spongebob.char");
+  chararr[1].loadCharacter( (char*) "characters/robot.char");
 
   while (glfwWindowShouldClose(window) == 0)
   {
-    character.update();
+    chararr[0].update();
+    chararr[1].update();
     render(window);
     glfwSwapBuffers(window);
     glfwPollEvents();

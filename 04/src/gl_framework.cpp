@@ -38,7 +38,8 @@ namespace csX75
       exit(0);
     }
     if(key == GLFW_KEY_C && action == GLFW_PRESS){
-      character.frame_capture();
+      keyframe.push_back(Frame());
+      keyframe[keyframe.size()-1].frame_capture();
     }
   }
 

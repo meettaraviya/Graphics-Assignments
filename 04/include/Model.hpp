@@ -40,7 +40,6 @@ public:
 };
 
 class Character: public Model{
-	vector<glm::mat4> mats_relative_rot;
 	vector<glm::vec4> attach_points;
 	vector<vector<int>> tree;
 	void renderOne(int i, glm::mat4 parent_transform);
@@ -55,13 +54,13 @@ class Character: public Model{
 	  GLFW_KEY_H,
 	};
 public:
+	vector<glm::mat4> mats_relative_rot;
 	Character(){}
 	Character(int shape);
 	void render();
 	void update();
 	void fromFile(char* inFileName);
 	void addJoint(int, int, glm::vec3);
-	void frame_capture();
 	void loadCharacter(char* charFileName);
 
 };

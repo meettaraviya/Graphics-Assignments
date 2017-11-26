@@ -4,8 +4,10 @@
 #include "Include.hpp"
 #include "Transformation.hpp"
 #include "main.hpp"
+#include "Frame.hpp"
 
 extern class Character character;
+extern vector<class Frame> keyframe;
 
 namespace csX75
 {

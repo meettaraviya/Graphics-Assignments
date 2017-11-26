@@ -254,20 +254,6 @@ void Character::loadCharacter(char* charFileName){
 
 }
 
-void Character::frame_capture(){
-  ofstream outfile;
-  outfile.open("keyframes.txt",ios::app);
-
-  int size = mats_relative_rot.size();
-  for(int k=0;k<size;k++){
-    for(int i=0;i<4;i++){
-      for(int j=0;j<4;j++){
-        outfile << mats_relative_rot[k][i][j] << " ";
-      }
-    }
-  }
-  outfile.close();
-}
 
 void Model::fromFile(char* inFileName){
 
