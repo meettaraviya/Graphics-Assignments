@@ -9,7 +9,8 @@ glm::mat4 modelview_matrix;
 Model model;
 vector<Frame>keyframe;
 vector<int>numframe;
-vector<Character> characters(2); 
+vector<Character> characters(2);
+unsigned char *pixels;
 
 int mode = RECORD;
 
@@ -35,7 +36,20 @@ void initShadersGL(void)
   uModelViewMatrix = glGetUniformLocation(shaderProgram, "uModelViewMatrix");
 
 }
+int screenShot(int frame_num)
+{
+  FILE * shot;
+  int screenStats[4];
+  glGetIntegerv(GL_VIEWPORT, screenStats);
+  pixels = new unsigned char[screenStats[2]*screenStats[3]*3];
+  glReadPixels(0, 0, screenStats[2], screenStats[3], GL_BGR,
+                                   GL_UNSIGNED_BYTE, pixels);
+  char filename[200];
+  sprintf(filename,"images/frame_%d.tga",frame_num);
+  if((shot=fopen(filename, "wb"))==NULL)
+    return 1;
 
+}
 void render(GLFWwindow *window)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -66,6 +80,13 @@ void render(GLFWwindow *window)
     prev_time = glfwGetTime();
     allframes[frame_num].frame_set();
     frame_num = (frame_num+1)%(allframes.size());
+  }
+
+  if(mode==RENDER){
+    static int frame_num = 0;
+    allframes[frame_num].frame_set();
+    frame_num = (frame_num+1)%(allframes.size());
+    screenShot(frame_num);
   }
 
   characters[0].render();
@@ -109,7 +130,7 @@ int main(int argc, char** argv)
   cout << "\n\t[0] Playback \n\t[1] Record\nEnter mode:  ";
   cin >> mode;
 
-  if(mode==PLAYBACK){
+  if(mode==PLAYBACK || mode==RENDER){
     load_keyframes();
     interpolate_frames();
   }

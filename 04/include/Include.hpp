@@ -31,6 +31,7 @@
 
 #define PLAYBACK 0
 #define RECORD 1
+#define RENDER 2
 
 using namespace std;
 
