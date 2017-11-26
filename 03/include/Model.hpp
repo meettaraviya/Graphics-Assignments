@@ -89,7 +89,11 @@ public:
 	void update();
 	void fromFile(char* inFileName);
 	void addJoint(int, int, glm::vec3);
+<<<<<<< HEAD
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
 >>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 };
 
 #endif

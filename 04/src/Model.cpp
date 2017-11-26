@@ -1,4 +1,5 @@
 #include "Model.hpp"
+#include <fstream>
 
 using namespace std;
 
@@ -10,9 +11,9 @@ unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned in
     unsigned int size; //w*h*3
     unsigned char * data; // Data in RGB FORMAT
     FILE * file;
-    
+
     file = fopen( filename, "rb" );
-    // if ( file == NULL ) return 0;  // if file is empty 
+    // if ( file == NULL ) return 0;  // if file is empty
     if (fread(header,1,54,file)!=54)
       {
   printf("Incorrect BMP file\n");
@@ -33,7 +34,7 @@ unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned in
 
     data = new unsigned char [size];
 
-    // cout << "fread" << 
+    // cout << "fread" <<
     fread( data, size, 1, file );// << endl; // read the file
     fclose( file );
     //////////////////////////
@@ -45,15 +46,12 @@ unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned in
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-   
+
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-    
-    // cout << data << endl;
 
     return data;// return the texture id
 }
-
 
 Model::Model(int shape){
 	glGenVertexArrays (1, &vao);
@@ -61,7 +59,7 @@ Model::Model(int shape){
 	glEnableVertexAttribArray(vPosition);
 	glEnableVertexAttribArray(vColor);
 	glEnableVertexAttribArray(vUV);
-	
+
 	draw_mode = shape;
 }
 
@@ -71,7 +69,7 @@ Character::Character(int shape){
 	glEnableVertexAttribArray(vPosition);
 	glEnableVertexAttribArray(vColor);
 	glEnableVertexAttribArray(vUV);
-	
+
 	draw_mode = shape;
 }
 
@@ -106,13 +104,14 @@ void Model::render(){
 		glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
 		glVertexAttribPointer( vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)) );
 		glVertexAttribPointer( vUV, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(parts[i]->vertices.size()*sizeof(glm::vec4)*2) );
-		
+
 		glDrawArrays(draw_mode, 0, parts[i]->vertices.size());
 	}
-	
+
 }
 
 void Character::renderOne(int i, glm::mat4 par_transform, glm::mat4 parent_rotate){	
+
 	for(int i=0; i<parts.size(); i++){
 		if(glfwGetKey(window, GLFW_KEY_0+i)==GLFW_PRESS){
 			for(int j=0; j<6; j++){
@@ -147,7 +146,7 @@ void Character::renderOne(int i, glm::mat4 par_transform, glm::mat4 parent_rotat
 		glUseProgram( shaderProgram );
 		glUniform1i(vIsTextured, 1);
 		glBindTexture( GL_TEXTURE_2D, parts[i]->texture );
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parts[i]->texture_width, parts[i]->texture_height, 0, GL_BGR, GL_UNSIGNED_BYTE, parts[i]->texture_data);	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parts[i]->texture_width, parts[i]->texture_height, 0, GL_BGR, GL_UNSIGNED_BYTE, parts[i]->texture_data);
 
 		glDrawArrays(draw_mode, 0, parts[i]->num_textured);
 
@@ -171,43 +170,71 @@ void Character::update(){
 
 }
 
+void Character::fromFile(char* inFileName){
+
+  FILE *inpFile = fopen(inFileName, "r");
+  glm::vec4 pos(0.0,0.0,0.0,1.0), col(0.0,0.0,0.0,1.0);
+  glm::vec2 uvs;
+  int textured;
+  Part* part = new Part;
+
+  fscanf(inpFile,"%d",&(part->num_textured));
+  if(part->num_textured>0){
+    char textureFile[100];
+    fscanf(inpFile, "%s", textureFile);
+    part->texture_data = loadTexture(textureFile, part->texture_width, part->texture_height, part->texture);
+
+  }
+
+  while(fscanf(inpFile,"%f %f %f %f %f %f %d %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2], &textured, &uvs[0], &uvs[1])>0){
+    part->vertices.push_back(pos);
+    part->colors.push_back(col);
+    // part->textured.push_back(textured);
+    part->uvs.push_back(uvs);
+  }
+
+  cout << inFileName << endl;
+  for(int i=0; i<5; i++)
+    cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
+  cout << endl;
+
+  val_rot.push_back(glm::vec3());
+  attach_points.push_back(glm::vec4(0,0,0,0));
+  tree.push_back(vector<int>());
+
+  parts.push_back(part);
+  fclose(inpFile);
+}
+
 void Character::addJoint(int i, int j, glm::vec3 attach_point){
 	tree[i].push_back(j);
 	attach_points[j] = glm::vec4(attach_point,0);
 }
 
-void Character::fromFile(char* inFileName){
+void Character::loadCharacter(char* charFileName){
+  FILE *charFile = fopen(charFileName, "r");
+  char rawFileName[20];
+  int count;
+  fscanf(charFile, "%d", &count);
+  for(int i=0;i<count;i++){
+    fscanf(charFile,"%s",rawFileName);
+    fromFile(rawFileName);
+    loadBuffers(i);
+  }
+  int l, r;
+  glm::vec3 pos;
+  for(int i=0; i<count-1; i++){
+    fscanf( charFile, "%d %d %f %f %f", &l, &r, &pos.x, &pos.y, &pos.z);
+    addJoint(l, r, pos);
+  }
 
-	FILE *inpFile = fopen(inFileName, "r");
-	glm::vec4 pos(0.0,0.0,0.0,1.0), col(0.0,0.0,0.0,1.0);
-	glm::vec2 uvs;
-	int textured;
-	Part* part = new Part;
+  char textureFile[100];
+  // fscanf(charFile, "%s" , textureFile);
 
-	fscanf(inpFile,"%d",&(part->num_textured));
-	if(part->num_textured>0){
-		char textureFile[100];
-		fscanf(inpFile, "%s", textureFile);
-		part->texture_data = loadTexture(textureFile, part->texture_width, part->texture_height, part->texture);
+  // GLuint texture = loadTexture(textureFile);
 
-	}
-	
-	while(fscanf(inpFile,"%f %f %f %f %f %f %d %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2], &textured, &uvs[0], &uvs[1])>0){
-		part->vertices.push_back(pos);
-		part->colors.push_back(col);
-		part->uvs.push_back(uvs);
-	}
+  fclose(charFile);
 
-	for(int i=0; i<5; i++)
-		cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
-
-	mats_relative_rot.push_back(id);
-	attach_points.push_back(glm::vec4(0,0,0,0)); 
-	tree.push_back(vector<int>());
-	val_rot.push_back(glm::vec3(0.0,0.0,0.0));
-
-	parts.push_back(part);
-	fclose(inpFile);
 }
 
 
@@ -225,7 +252,7 @@ void Model::fromFile(char* inFileName){
 		fscanf(inpFile, "%s", textureFile);
 		part->texture_data = loadTexture(textureFile, part->texture_width, part->texture_height, part->texture);
 	}
-	
+
 	while(fscanf(inpFile,"%f %f %f %f %f %f %d %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2], &textured, &uvs[0], &uvs[1])>0){
 		part->vertices.push_back(pos);
 		part->colors.push_back(col);
@@ -235,7 +262,7 @@ void Model::fromFile(char* inFileName){
 	cout << inFileName << endl;
 	for(int i=0; i<5; i++)
 		cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
-	cout << endl; 
+	cout << endl;
 
 	parts.push_back(part);
 	fclose(inpFile);

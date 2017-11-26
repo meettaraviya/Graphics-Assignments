@@ -7,6 +7,10 @@ GLuint shaderProgram, vPosition, vColor, uModelViewMatrix, uPartMatrix;
 
 glm::mat4 modelview_matrix;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 Scene* scene, *scene2;
 Model* model;
 =======
@@ -16,7 +20,11 @@ glm::mat4 modelview_matrix;
 
 Model model;
 Character character;
+<<<<<<< HEAD
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
 >>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -73,7 +81,11 @@ void render(GLFWwindow *window)
 
   // model.render();
   character.render();
+<<<<<<< HEAD
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
 >>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
 }
 
@@ -128,6 +140,10 @@ void loadCharacter(char* charFileName){
   for(int i=0; i<count-1; i++){
     fscanf( charFile, "%d %d %f %f %f", &l, &r, &pos.x, &pos.y, &pos.z);
     character.addJoint(l, r, pos);
+<<<<<<< HEAD
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
   }
 
   char textureFile[100];
@@ -173,9 +189,15 @@ int main(int argc, char** argv)
   model = Model(GL_TRIANGLES);
   character = Character(GL_TRIANGLES);
 
+<<<<<<< HEAD
+  loadScene( (char*) "scenes/myscene.scn");
+  loadCharacter( (char*) "characters/1.char");
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
   loadCharacter( (char*) "characters/spongebob.char");
   // loadCharacter( (char*) "characters/robot.char");
 >>>>>>> NEW
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 
   while (glfwWindowShouldClose(window) == 0)
   { 

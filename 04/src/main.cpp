@@ -7,7 +7,9 @@ GLuint shaderProgram, vPosition, vColor, vUV, uModelViewMatrix, vIsTextured;
 glm::mat4 modelview_matrix;
 
 Model model;
-Character character;
+vector<Frame>keyframe;
+vector<int>numframe;
+Character chararr[2];
 
 const glm::vec4 bg_color(0.95, 0.95, 0.95, 1.0);
 
@@ -40,24 +42,23 @@ void render(GLFWwindow *window)
   World::update();
   RealView::update();
 
-  modelview_matrix = RealView::mat_proj * 
+  modelview_matrix = RealView::mat_proj *
                       RealView::mat_lookat *
                       World::mat_translation *
                       World::mat_rotation;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  modelview_matrix = RealView::mat_proj * 
+  modelview_matrix = RealView::mat_proj *
                       RealView::mat_lookat *
                       World::mat_translation *
                       World::mat_rotation;
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  character.render();
-
+  chararr[0].render();
+  chararr[1].render();
 }
-
 
 void loadScene(char* modelFileName){
   FILE *modelFile = fopen(modelFileName, "r");
@@ -79,43 +80,22 @@ void loadScene(char* modelFileName){
   fclose(modelFile);
 }
 
-void loadCharacter(char* charFileName){
-  FILE *charFile = fopen(charFileName, "r");
-  char rawFileName[20];
-  int count;
-  fscanf(charFile, "%d", &count);
-  for(int i=0;i<count;i++){
-    fscanf(charFile,"%s",rawFileName);
-    character.fromFile(rawFileName);
-    character.loadBuffers(i);
-  }
-  int l, r;
-  glm::vec3 pos;
-  for(int i=0; i<count-1; i++){
-    fscanf( charFile, "%d %d %f %f %f", &l, &r, &pos.x, &pos.y, &pos.z);
-    character.addJoint(l, r, pos);
-  }
-
-  char textureFile[100];
-
-  fclose(charFile);
-
-}
-
 int main(int argc, char** argv)
 {
   window = csX75::getWindow();
 
   initShadersGL();
   model = Model(GL_TRIANGLES);
-  character = Character(GL_TRIANGLES);
+  chararr[0] = Character(GL_TRIANGLES);
+  chararr[1] = Character(GL_TRIANGLES);
 
-  loadCharacter( (char*) "characters/spongebob.char");
-  // loadCharacter( (char*) "characters/robot.char");
+  chararr[0].loadCharacter( (char*) "characters/spongebob.char");
+  chararr[1].loadCharacter( (char*) "characters/robot.char");
 
   while (glfwWindowShouldClose(window) == 0)
-  { 
-    character.update();
+  {
+    chararr[0].update();
+    chararr[1].update();
     render(window);
     glfwSwapBuffers(window);
     glfwPollEvents();

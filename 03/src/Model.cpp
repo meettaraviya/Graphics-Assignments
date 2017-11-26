@@ -344,5 +344,9 @@ void Model::fromFile(char* inFileName){
 
 	parts.push_back(part);
 	fclose(inpFile);
+<<<<<<< HEAD
+>>>>>>> d95e54389d24f980f7e8dea61f115a16b1699a64
+=======
+>>>>>>> 3309f3cc013603aa1305686de916ac964c236e0d
 }
 >>>>>>> NEW

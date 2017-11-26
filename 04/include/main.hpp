@@ -10,11 +10,15 @@
 #include "Transformation.hpp"
 #include "RealView.hpp"
 
+void frame_capture();
+
 extern GLFWwindow* window;
 
 extern glm::mat4 modelview_matrix;
 
 extern Model model;
 
+extern class Character chararr[2];
 
+extern vector<int>numframe;
 #endif
