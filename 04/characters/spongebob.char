@@ -1,4 +1,4 @@
-9
+12
 
 scripts/front.raw
 scripts/left_hand_low.raw
@@ -9,8 +9,9 @@ scripts/left_leg_high.raw
 scripts/right_leg_high.raw
 scripts/left_leg_low.raw
 scripts/right_leg_low.raw
-
-
+scripts/left_eye.raw
+scripts/right_eye.raw
+scripts/mouth_teeth.raw
 
 0 1 -15 -50 0
 0 2 15 -50 0
@@ -20,5 +21,8 @@ scripts/right_leg_low.raw
 0 6 -7.5 -115 0
 5 7 7.5 -125 0
 6 8 7.5 -125 0
+0 9 -7.5 -25 0
+0 10 7.5 -25 0
+0 11 0 -85 0
 
 texture.bmp
