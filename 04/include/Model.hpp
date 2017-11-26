@@ -41,18 +41,19 @@ public:
 
 class Character: public Model{
 	vector<glm::mat4> mats_relative_rot;
+	vector<glm::vec3> val_rot;
 	vector<glm::vec4> attach_points; 
 	vector<vector<int>> tree;
-	void renderOne(int i, glm::mat4 parent_transform);
+	void renderOne(int i, glm::mat4 parent_translate, glm::mat4 parent_rotate);
 
 	GLfloat relative_rot_speed = 1.57e-2;
 	GLuint relative_rot_keys[6] = {
-	  GLFW_KEY_R,
-	  GLFW_KEY_F,
 	  GLFW_KEY_T,
 	  GLFW_KEY_G,
 	  GLFW_KEY_Y,
 	  GLFW_KEY_H,
+	  GLFW_KEY_U,
+	  GLFW_KEY_J,
 	};
 public:
 	Character(){}

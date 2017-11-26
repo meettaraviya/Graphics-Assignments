@@ -110,40 +110,29 @@ void Model::render(){
 	
 }
 
-void Character::renderOne(int i, glm::mat4 parent_transform){
-
-
-	glm::vec3 new_axes[6];
-	glm::mat4 mat_mult_left = RealView::mat_proj * 
-	                    RealView::mat_lookat *
-	                    World::mat_translation *
-	                    World::mat_rotation;
-	glm::vec3 vec_translate(parent_transform * attach_points[i] );
-
-	for(int i=0; i<6; i++)
-		new_axes[i] = glm::vec3(mat_mult_left*parent_transform*glm::vec4(World::axes[i],1.0));
-
+void Character::renderOne(int i, glm::mat4 par_transform, glm::mat4 parent_rotate){	
 	for(int i=0; i<parts.size(); i++){
 		if(glfwGetKey(window, GLFW_KEY_0+i)==GLFW_PRESS){
 			for(int j=0; j<6; j++){
 		      if(glfwGetKey(window, relative_rot_keys[j])==GLFW_PRESS){
-		      	mats_relative_rot[i] = glm::rotate(id, relative_rot_speed, World::axes[j])*mats_relative_rot[i]; 	
+		      	val_rot[i][j/2] += ((j%2) ? -1 : 1)*relative_rot_speed;
 		      }
 			}
 		}
 	}
 
-	glm::mat4 my_transform = 
-		glm::translate(id, vec_translate) *
-		mats_relative_rot[i] *
-		glm::translate(id, -vec_translate) *
-		parent_transform;
+	glm::mat4 my_rotate = id;
+	for(int j=0; j<3; j++)
+		my_rotate = glm::rotate(id, val_rot[i][j], World::axes[2*j])*my_rotate;
 
-	// cout << i << " " << my_transform[0][0] << " " << my_transform[0][1] << " " << my_transform[0][2] << " " << endl;
+	glm::mat4 my_transform = id;
+	my_transform = glm::translate(id, glm::vec3(attach_points[i])) * my_rotate
+				   * (glm::translate(id, -glm::vec3(attach_points[i])));
 
-	glm::mat4 modelview_matrix = mat_mult_left * my_transform;
-	
-	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
+	glm::mat4 model_view_transform = RealView::mat_proj * RealView::mat_lookat * World::mat_translation * 
+									World::mat_rotation * par_transform * my_transform;
+
+	glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(model_view_transform));
 
 	glBindBuffer (GL_ARRAY_BUFFER, parts[i]->vbo);
 
@@ -171,16 +160,13 @@ void Character::renderOne(int i, glm::mat4 parent_transform){
 
 	}
 	for(auto j : tree[i]){
-		renderOne(j, my_transform);
+		renderOne(j, par_transform * my_transform, my_rotate);
 	}
 }
 
 void Character::render(){
-
 	glBindVertexArray (vao);
-
-	renderOne(0, id);
-	
+	renderOne(0, id, id);
 }
 
 void Character::update(){
@@ -223,6 +209,7 @@ void Character::fromFile(char* inFileName){
 	mats_relative_rot.push_back(id);
 	attach_points.push_back(glm::vec4(0,0,0,0)); 
 	tree.push_back(vector<int>());
+	val_rot.push_back(glm::vec3(0.0,0.0,0.0));
 
 	parts.push_back(part);
 	fclose(inpFile);

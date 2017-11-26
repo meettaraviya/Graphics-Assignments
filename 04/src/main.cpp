@@ -114,8 +114,8 @@ int main(int argc, char** argv)
   model = Model(GL_TRIANGLES);
   character = Character(GL_TRIANGLES);
 
-  loadCharacter( (char*) "characters/spongebob.char");
-  // loadCharacter( (char*) "characters/robot.char");
+  // loadCharacter( (char*) "characters/spongebob.char");
+  loadCharacter( (char*) "characters/robot.char");
 
   while (glfwWindowShouldClose(window) == 0)
   { 
