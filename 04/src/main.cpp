@@ -38,16 +38,15 @@ void initShadersGL(void)
 }
 int screenShot(int frame_num)
 {
-  FILE * shot;
-  int screenStats[4];
-  glGetIntegerv(GL_VIEWPORT, screenStats);
-  pixels = new unsigned char[screenStats[2]*screenStats[3]*3];
-  glReadPixels(0, 0, screenStats[2], screenStats[3], GL_BGR,
-                                   GL_UNSIGNED_BYTE, pixels);
-  char filename[200];
-  sprintf(filename,"images/frame_%d.tga",frame_num);
-  if((shot=fopen(filename, "wb"))==NULL)
-    return 1;
+  FILE   *out = fopen(("images/"+std::to_string(frame_num)+".tga").c_str(),"wb");
+      char   *pixel_data = new char[3*WINDOW_WIDTH*WINDOW_HEIGHT];
+      short  TGAhead[] = { 0, 2, 0, 0, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 24 };
+      glReadBuffer(GL_FRONT);
+      glReadPixels(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GL_BGR, GL_UNSIGNED_BYTE, pixel_data);
+
+      fwrite(TGAhead,sizeof(TGAhead),1,out);
+      fwrite(pixel_data, 3*WINDOW_WIDTH*WINDOW_HEIGHT, 1, out);
+      fclose(out);
 
 }
 void render(GLFWwindow *window)

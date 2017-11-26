@@ -1,0 +1,28 @@
+Rajat Kapoor 150050037
+Meet Taraviya 150050002
+
+Report
+When you run make and the run the executable, it asks for a option:
+  0 for recording
+  1 for playback
+  2 for render(to tga format)
+
+When in record mode,a frame is captured by pressing C, then you have to enter the number of frames between this frame and the next, so basically the no of interpolated frames we want between any two frames.
+When you want to end frame capturing, press C and then -1.The keyframes are stored in a file named keyframes.txt.
+
+When in playback mode, the code will automatically read the frames from keyframes.txt and based on the no of frames between two frames will generate the middle frames itself and render it for you showing the posItions on the screen.
+
+When in render mode the frames get converted into tga format and then can be combined to form a video file using ffmpeg command.
+
+Controls:
+To rotate i-th part in the key, press key i along with one of R/F/T/G/Y/H:
+
+  1. 0+(U-J),(T-G),(Y-H)
+  2. 1+(U-J),(T-G),(Y-H)
+  3. 2+(U-J),(T-G),(Y-H)
+  4. 3+(U-J),(T-G),(Y-H)
+  5. 4+(U-J),(T-G),(Y-H)
+  6. 5+(U-J),(T-G),(Y-H)
+
+
+
