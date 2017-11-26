@@ -26,9 +26,9 @@ void initShadersGL(void)
   vPosition = glGetAttribLocation( shaderProgram, "vPosition" );
   vColor = glGetAttribLocation( shaderProgram, "vColor" );
   vUV = glGetAttribLocation( shaderProgram, "uv" );
-  vIsTextured = glGetAttribLocation( shaderProgram, "isTextured" );
 
-  // cout << "vIsT" << vIsTextured << endl;
+  vIsTextured = glGetUniformLocation( shaderProgram, "isTextured" );
+  uModelViewMatrix = glGetUniformLocation(shaderProgram, "uModelViewMatrix");
 
 }
 
@@ -54,7 +54,6 @@ void render(GLFWwindow *window)
 
   glUniformMatrix4fv(uModelViewMatrix, 1, GL_FALSE, glm::value_ptr(modelview_matrix));
 
-  // model.render();
   character.render();
 
 }
@@ -98,9 +97,6 @@ void loadCharacter(char* charFileName){
   }
 
   char textureFile[100];
-  // fscanf(charFile, "%s" , textureFile);
-
-  // GLuint texture = loadTexture(textureFile);
 
   fclose(charFile);
 
@@ -114,8 +110,8 @@ int main(int argc, char** argv)
   model = Model(GL_TRIANGLES);
   character = Character(GL_TRIANGLES);
 
-  // loadCharacter( (char*) "characters/spongebob.char");
-  loadCharacter( (char*) "characters/robot.char");
+  loadCharacter( (char*) "characters/spongebob.char");
+  // loadCharacter( (char*) "characters/robot.char");
 
   while (glfwWindowShouldClose(window) == 0)
   { 

@@ -26,7 +26,7 @@ unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned in
     h = *(int*)&(header[0x16]);
 
     //Just in case metadata is missing
-    if(size == 0) 
+    if(size == 0)
       size = w*h*3;
     if(pos == 0)
       pos = 54;
@@ -49,6 +49,8 @@ unsigned char * loadTexture( const char * filename, unsigned int &w, unsigned in
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
     
+    // cout << data << endl;
+
     return data;// return the texture id
 }
 
@@ -142,21 +144,17 @@ void Character::renderOne(int i, glm::mat4 par_transform, glm::mat4 parent_rotat
 
 
 	if(parts[i]->num_textured>0){
-		// cout << i << " " << parts[i]->num_textured << endl;
-		glm::vec4 one(1,1,1,1);
-		glUniform4fv(vIsTextured, 1, &one[0]);
-		// cout << (long int)parts[i]->texture_data << endl;
+		glUseProgram( shaderProgram );
+		glUniform1i(vIsTextured, 1);
 		glBindTexture( GL_TEXTURE_2D, parts[i]->texture );
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, parts[i]->texture_width, parts[i]->texture_height, 0, GL_BGR, GL_UNSIGNED_BYTE, parts[i]->texture_data);	
 
 		glDrawArrays(draw_mode, 0, parts[i]->num_textured);
-	}else{
-	
-	glm::vec4 zero(0,0,0,0);
-	glUniform4fv(vIsTextured, 1, &zero[0]);
 
-	
-	glDrawArrays(draw_mode, parts[i]->num_textured, parts[i]->vertices.size()-parts[i]->num_textured);
+	}else{
+		glUseProgram( shaderProgram );
+		glUniform1i(vIsTextured, 0);
+		glDrawArrays(draw_mode, parts[i]->num_textured, parts[i]->vertices.size()-parts[i]->num_textured);
 
 	}
 	for(auto j : tree[i]){
@@ -197,14 +195,11 @@ void Character::fromFile(char* inFileName){
 	while(fscanf(inpFile,"%f %f %f %f %f %f %d %f %f",&pos[0],&pos[1],&pos[2],&col[0],&col[1],&col[2], &textured, &uvs[0], &uvs[1])>0){
 		part->vertices.push_back(pos);
 		part->colors.push_back(col);
-		// part->textured.push_back(textured);
 		part->uvs.push_back(uvs);
 	}
 
-	cout << inFileName << endl;
 	for(int i=0; i<5; i++)
 		cout << part->vertices[i].x << " " << part->vertices[i].y << " " << part->vertices[i].z << " " << endl;
-	cout << endl; 
 
 	mats_relative_rot.push_back(id);
 	attach_points.push_back(glm::vec4(0,0,0,0)); 
