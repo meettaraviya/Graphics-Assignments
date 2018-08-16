@@ -11,7 +11,6 @@ specific values between 0 and 1 are written to it.
 
 We made a humanoid model of spongebog squarepants. Not detailed due to lack of time.
 
-However there is some error, so both texture and colours are not working together.
 Please comment out lines 12,14,15,16 of shaders/fshader.glsl, while testing the non humanoid model robot.char. Model can be toggled using appropriately commenting 116 and 117 of main.cpp. Sorry for inconvenience, but there was a lack of time.
 
 
